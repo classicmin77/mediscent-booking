@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MEDISCENT RESERVATION">
 <meta name="robots" content="index,follow">
-<meta name="description" content="MEDISCENT 통합 예약 — SHIFTI 향수 클래스와 Neuroscent EEG Session을 한 곳에서 예약하세요.">
+<meta name="description" content="MEDISCENT 통합 예약 — SHIFTI 향수 클래스와  EEG Session을 한 곳에서 예약하세요.">
 <meta name="theme-color" content="#334846">
 <style>
 :root{
@@ -98,7 +98,7 @@ body{font-size:16px;line-height:1.6}body:before{display:none}button,input,textar
 
 <div class="mobilebar hidden" id="mobileBar"><button class="btn primary full" id="mobileCta" onclick="nextStep()">다음</button></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div><dialog id="lookup" class="lookup" aria-labelledby="lookupTitle"><form method="dialog"><h2 id="lookupTitle">예약 확인</h2><p id="lookupNote"></p><label for="lookupCode">Booking code</label><input id="lookupCode" placeholder="MS…" autocomplete="off"><label for="lookupContact">Email / Phone</label><input id="lookupContact" placeholder="name@email.com" autocomplete="off"><div id="lookupResult" class="lookup-result" role="status"></div><div class="actions"><button type="button" class="btn primary" onclick="findBooking()">조회 / Find</button><button class="btn soft">닫기 / Close</button></div></form></dialog>
-<footer id="footer"><div class="shell foot"><div><b>MEDISCENT RESERVATION</b><span>SHIFTI Perfume Class · MEDISCENT Neuroscent Session<br>Seoul · Insadong</span></div><div><b>NOTICE</b><span data-t="foot.note">본 POC의 EEG 세션은 의료 진단·치료 목적이 아닌 웰니스 체험 예약 흐름을 가정합니다.</span></div><div><b>INSADONG, SEOUL</b><span>SHIFTI · MEDISCENT LAB</span></div></div></footer>
+<footer id="footer"><div class="shell foot"><div><b>MEDISCENT RESERVATION</b><span>SHIFTI Perfume Class · MEDISCENT Neuroscent Session<br>Seoul · Insadong</span></div><div><b>NOTICE</b><span data-t="foot.note">Neuroscent EEG 세션은 의료 진단·치료 목적이 아닌 웰니스 체험 프로그램입니다.</span></div><div><b>INSADONG, SEOUL</b><span>SHIFTI · MEDISCENT LAB</span></div></div></footer>
 
 <script>
 const IMG='';
@@ -107,10 +107,10 @@ const SERVICES={
  perfume:{id:'perfume',brand:'SHIFTI',title:{ko:'향수 클래스',en:'Perfume Class'},sub:{ko:'나만의 향수를 직접 만드는 조향 체험',en:'Create your own signature fragrance'},chip:'PERFUME CLASS',duration:30,capacity:10,groupMax:10,start:'10:30',end:'19:00',step:30,payment:true,
  plans:[{id:'p30',name:{ko:'30ml 클래스',en:'30ml Class'},desc:{ko:'30ml EDT · 20~30분',en:'30ml EDT · 20–30 min'},price:39000},{id:'n30',name:{ko:'천연유래 30ml',en:'Natural-Origin 30ml'},desc:{ko:'천연유래 성분 중심 · 20~30분',en:'Natural-origin focused · 20–30 min'},price:49000},{id:'p50',name:{ko:'50ml 클래스',en:'50ml Class'},desc:{ko:'50ml EDT · 약 30분',en:'50ml EDT · about 30 min'},price:55000},{id:'n50',name:{ko:'천연유래 50ml',en:'Natural-Origin 50ml'},desc:{ko:'천연유래 성분 중심 · 약 30분',en:'Natural-origin focused · about 30 min'},price:65000}]},
  eeg:{id:'eeg',brand:'MEDISCENT LAB',title:{ko:'Neuroscent EEG Session',en:'Neuroscent EEG Session'},sub:{ko:'EEG × 향기 반응 웰니스 체험',en:'EEG × scent response wellness experience'},chip:'NEUROSCENT',duration:60,capacity:1,groupMax:1,start:'11:00',end:'18:00',step:60,payment:false,
- plans:[{id:'eeg-basic',name:{ko:'EEG Scent Session',en:'EEG Scent Session'},desc:{ko:'EEG 착용 · 향기 체험 · 세션 리포트 안내',en:'EEG setup · scent experience · session report guidance'},price:null},{id:'eeg-deep',name:{ko:'Neuroscent Deep Session',en:'Neuroscent Deep Session'},desc:{ko:'확장형 세션 · 운영 가격 설정 전 POC',en:'Extended session · POC price not configured'},price:null}]}
+ plans:[{id:'eeg-basic',name:{ko:'EEG Scent Session',en:'EEG Scent Session'},desc:{ko:'EEG 착용 · 향기 체험 · 세션 리포트 안내',en:'EEG setup · scent experience · session report guidance'},price:null},{id:'eeg-deep',name:{ko:'Neuroscent Deep Session',en:'Neuroscent Deep Session'},desc:{ko:'확장형 세션 · 가격 협의',en:'Extended session · price on request'},price:null}]}
 };
 const I18N={
-'nav.my':{ko:'예약 확인',en:'MY BOOKING'},'nav.admin':{ko:'관리',en:'ADMIN'},'hero.copy':{ko:'<b>향을 만들고, 나의 상태를 이해하는 경험.</b><br>SHIFTI 향수 클래스와 MEDISCENT Neuroscent 세션을 하나의 예약 시스템에서 만나보세요.',en:'<b>Create scent and explore your state.</b><br>Book SHIFTI Perfume Class and MEDISCENT Neuroscent sessions in one place.'},'hero.cta':{ko:'경험 선택하기 →',en:'Choose an experience →'},'hero.check':{ko:'예약 확인',en:'Check booking'},'hero.float':{ko:'향수 클래스와 Neuroscent 세션을 한 곳에서 예약하세요.',en:'Book perfume and Neuroscent experiences in one place.'},'n1':{ko:'날짜·시간 실시간 선택',en:'Date & time selection'},'n3':{ko:'독립 PG 연동 구조',en:'Independent PG architecture'},'svc.title':{ko:'두 가지 방식으로 나를 만나다',en:'Two ways to meet yourself'},'svc.copy':{ko:'향을 직접 만드는 감각적 경험과, EEG 신호를 통해 향에 대한 반응을 관찰하는 Neuroscent 세션을 목적에 맞게 선택하세요.',en:'Choose between a hands-on fragrance class and a Neuroscent session that observes EEG signals during scent experiences.'},'perf.name':{ko:'향수 클래스',en:'Perfume Class'},'perf.desc':{ko:'다양한 향료를 직접 시향하고 블렌딩해 세상에 하나뿐인 나만의 향수를 완성합니다.',en:'Smell, select and blend fragrance notes to create a scent that is uniquely yours.'},'eeg.name':{ko:'Neuroscent EEG Session',en:'Neuroscent EEG Session'},'eeg.desc':{ko:'EEG 센서를 착용하고 향을 경험하며, 세션 중 나타나는 생체신호 변화를 웰니스 관점에서 관찰합니다.',en:'Wear EEG sensors while experiencing scent and observe signal changes from a wellness perspective.'},'book.now':{ko:'예약하기 →',en:'Book now →'},'book.session':{ko:'세션 예약하기 →',en:'Book session →'},'how.title':{ko:'하나의 예약,<br>두 개의 경험.',en:'One booking system,<br>two experiences.'},'how.copy':{ko:'서비스는 다르지만 예약·결제·취소·고객 안내는 한 시스템에서 통합 관리합니다. 광고 유입부터 실제 예약까지 서비스별 전환도 구분해 기록합니다.',en:'Different services, one operating system for booking, payment, cancellation and attribution.'},'p1h':{ko:'서비스 선택',en:'Choose service'},'p1b':{ko:'Perfume Class 또는 Neuroscent Session을 선택합니다.',en:'Choose Perfume Class or Neuroscent Session.'},'p2h':{ko:'날짜와 시간',en:'Date & time'},'p2b':{ko:'서비스별 운영시간과 잔여석을 확인합니다.',en:'See service-specific availability.'},'p3h':{ko:'10분 좌석 확보',en:'10-minute hold'},'p3b':{ko:'결제 단계에서 좌석을 임시 확보합니다.',en:'A temporary hold protects the slot during checkout.'},'p4h':{ko:'예약 확정',en:'Confirmation'},'p4b':{ko:'운영 환경에서는 PG 서버 검증 후 예약을 확정합니다.',en:'Production confirms only after server-side PG verification.'},'back.home':{ko:'← 통합 예약 홈',en:'← Reservation home'},'admin.pin':{ko:'스태프 계정으로 로그인하세요.',en:'Enter the POC admin code.'},'admin.enter':{ko:'입장',en:'Enter'},'foot.note':{ko:'본 POC의 EEG 세션은 의료 진단·치료 목적이 아닌 웰니스 체험 예약 흐름을 가정합니다.',en:'The EEG flow in this POC is for a non-medical wellness experience, not diagnosis or treatment.'}}
+'nav.my':{ko:'예약 확인',en:'MY BOOKING'},'nav.admin':{ko:'관리',en:'ADMIN'},'hero.copy':{ko:'<b>향을 만들고, 나의 상태를 이해하는 경험.</b><br>SHIFTI 향수 클래스와 MEDISCENT Neuroscent 세션을 하나의 예약 시스템에서 만나보세요.',en:'<b>Create scent and explore your state.</b><br>Book SHIFTI Perfume Class and MEDISCENT Neuroscent sessions in one place.'},'hero.cta':{ko:'경험 선택하기 →',en:'Choose an experience →'},'hero.check':{ko:'예약 확인',en:'Check booking'},'hero.float':{ko:'향수 클래스와 Neuroscent 세션을 한 곳에서 예약하세요.',en:'Book perfume and Neuroscent experiences in one place.'},'n1':{ko:'날짜·시간 실시간 선택',en:'Date & time selection'},'n3':{ko:'독립 PG 연동 구조',en:'Independent PG architecture'},'svc.title':{ko:'두 가지 방식으로 나를 만나다',en:'Two ways to meet yourself'},'svc.copy':{ko:'향을 직접 만드는 감각적 경험과, EEG 신호를 통해 향에 대한 반응을 관찰하는 Neuroscent 세션을 목적에 맞게 선택하세요.',en:'Choose between a hands-on fragrance class and a Neuroscent session that observes EEG signals during scent experiences.'},'perf.name':{ko:'향수 클래스',en:'Perfume Class'},'perf.desc':{ko:'다양한 향료를 직접 시향하고 블렌딩해 세상에 하나뿐인 나만의 향수를 완성합니다.',en:'Smell, select and blend fragrance notes to create a scent that is uniquely yours.'},'eeg.name':{ko:'Neuroscent EEG Session',en:'Neuroscent EEG Session'},'eeg.desc':{ko:'EEG 센서를 착용하고 향을 경험하며, 세션 중 나타나는 생체신호 변화를 웰니스 관점에서 관찰합니다.',en:'Wear EEG sensors while experiencing scent and observe signal changes from a wellness perspective.'},'book.now':{ko:'예약하기 →',en:'Book now →'},'book.session':{ko:'세션 예약하기 →',en:'Book session →'},'how.title':{ko:'하나의 예약,<br>두 개의 경험.',en:'One booking system,<br>two experiences.'},'how.copy':{ko:'서비스는 다르지만 예약·결제·취소·고객 안내는 한 시스템에서 통합 관리합니다. 광고 유입부터 실제 예약까지 서비스별 전환도 구분해 기록합니다.',en:'Different services, one operating system for booking, payment, cancellation and attribution.'},'p1h':{ko:'서비스 선택',en:'Choose service'},'p1b':{ko:'Perfume Class 또는 Neuroscent Session을 선택합니다.',en:'Choose Perfume Class or Neuroscent Session.'},'p2h':{ko:'날짜와 시간',en:'Date & time'},'p2b':{ko:'서비스별 운영시간과 잔여석을 확인합니다.',en:'See service-specific availability.'},'p3h':{ko:'10분 좌석 확보',en:'10-minute hold'},'p3b':{ko:'결제 단계에서 좌석을 임시 확보합니다.',en:'A temporary hold protects the slot during checkout.'},'p4h':{ko:'예약 확정',en:'Confirmation'},'p4b':{ko:'결제 승인 후 서버에서 결제 내역을 검증해 예약을 확정합니다.',en:'Production confirms only after server-side PG verification.'},'back.home':{ko:'← 통합 예약 홈',en:'← Reservation home'},'admin.pin':{ko:'스태프 계정으로 로그인하세요.',en:'Log in with your staff account.'},'admin.enter':{ko:'로그인',en:'Log in'},'foot.note':{ko:'Neuroscent EEG 세션은 의료 진단·치료 목적이 아닌 웰니스 체험 프로그램입니다.',en:'Neuroscent EEG sessions are a non-medical wellness experience, not diagnosis or treatment.'}}
 let lang='ko';let state={service:null,step:0,date:null,time:null,plan:null,people:1,guest:{},holdUntil:null};let calCursor=new Date();calCursor.setDate(1);calCursor.setHours(0,0,0,0);let holdTimer=null;const qs=s=>document.querySelector(s);const qsa=s=>[...document.querySelectorAll(s)];
 function tr(k){return I18N[k]?.[lang]??k}function tObj(o){return typeof o==='string'?o:o?.[lang]||o?.ko||''}function money(v){return v==null?(lang==='ko'?'가격 설정 전':'Price TBD'):'₩'+Number(v).toLocaleString('ko-KR')}
 function setLang(l){if(state.step===3)syncGuest();lang=l;qs('#koBtn').classList.toggle('on',l==='ko');qs('#enBtn').classList.toggle('on',l==='en');qsa('[data-t]').forEach(el=>{const k=el.dataset.t;if(I18N[k]) el.innerHTML=tr(k)});document.documentElement.lang=l;if(state.service){if(state.completed)showDone(state.completed);else renderBooking()}if(!qs('#adminPanel').classList.contains('hidden'))renderAdmin()}
@@ -133,11 +133,11 @@ function makeSlots(s){const toMin=t=>{let[a,b]=t.split(':').map(Number);return a
 function existingCount(date,time,svc){return getBookings().filter(b=>b.service===svc&&b.date===date&&b.time===time&&b.status!=='cancelled').reduce((n,b)=>n+b.people,0)}
 function timePane(){const s=SERVICES[state.service],slots=makeSlots(s);return head(lang==='ko'?'시간을 선택하세요':'Choose a time',`${state.date||''} · ${s.duration} min`)+`<div class="slots">${slots.map(tm=>{const left=Math.max(0,s.capacity-existingCount(state.date,tm,s.id)),off=left<=0||slotExpired(state.date,tm),on=state.time===tm;return `<button class="slot ${on?'on':''}" ${off?'disabled':''} onclick="pickTime('${tm}')"><b>${tm}</b><small>${off?(lang==='ko'?'마감':'Full'):(s.capacity===1?(lang==='ko'?'1:1 가능':'1:1 available'):(lang==='ko'?`잔여 ${left}석`:`${left} left`))}</small></button>`}).join('')}</div><div class="medical-note">${state.service==='eeg'?(lang==='ko'?'EEG 세션은 1:1로 진행됩니다. 시간은 한국 표준시(KST) 기준입니다.':'EEG is a one-to-one session. All times are Korea Standard Time (KST).'):(lang==='ko'?'표시 시간은 한국 표준시(KST) 기준입니다. 함께 참여할 인원은 예약자 정보 단계에서 선택해 주세요.':'All times are Korea Standard Time (KST). Select your guest count in the details step.')}</div>`}
 function pickTime(t){state.time=t;state.step=2;renderBooking()}
-function planPane(){const s=SERVICES[state.service];return head(lang==='ko'?(state.service==='eeg'?'세션을 선택하세요':'클래스를 선택하세요'):'Choose a program',lang==='ko'?'예약 목적에 맞는 프로그램을 선택하세요.':'Select the program that fits your visit.')+`<div class="plan-grid">${s.plans.map(pl=>`<button class="plan ${state.plan===pl.id?'on':''}" onclick="pickPlan('${pl.id}')"><span class="picon">${state.service==='eeg'?'⌁':'✦'}</span><span class="copy"><b>${tObj(pl.name)}</b><small>${tObj(pl.desc)}</small></span><strong>${money(pl.price)}${pl.price==null?'<em>POC</em>':'<em>/ person</em>'}</strong></button>`).join('')}</div>`}
+function planPane(){const s=SERVICES[state.service];return head(lang==='ko'?(state.service==='eeg'?'세션을 선택하세요':'클래스를 선택하세요'):'Choose a program',lang==='ko'?'예약 목적에 맞는 프로그램을 선택하세요.':'Select the program that fits your visit.')+`<div class="plan-grid">${s.plans.map(pl=>`<button class="plan ${state.plan===pl.id?'on':''}" onclick="pickPlan('${pl.id}')"><span class="picon">${state.service==='eeg'?'⌁':'✦'}</span><span class="copy"><b>${tObj(pl.name)}</b><small>${tObj(pl.desc)}</small></span><strong>${money(pl.price)}${pl.price==null?'<em>LIVE</em>':'<em>/ person</em>'}</strong></button>`).join('')}</div>`}
 function pickPlan(id){state.plan=id;state.step=3;renderBooking()}
 function detailsPane(){const s=SERVICES[state.service];return head(lang==='ko'?'예약자 정보를 입력하세요':'Guest details',lang==='ko'?'예약 확인과 방문 안내에 필요한 최소 정보만 입력합니다.':'We collect only the information needed to manage your booking.')+`<div class="form-grid"><div class="field"><label>${lang==='ko'?'참여 인원':'Guests'}</label><div class="stepper"><button onclick="people(-1)">−</button><span id="peopleN">${state.people}</span><button onclick="people(1)">+</button></div></div><div class="field"><label>${lang==='ko'?'국가 / 지역':'Country / region'}</label><select id="country"><option value="KR">Korea</option><option value="US">United States</option><option value="JP">Japan</option><option value="CN">China</option><option value="TW">Taiwan</option><option value="HK">Hong Kong</option><option value="SG">Singapore</option><option value="ZZ">Other</option></select></div><div class="field"><label>${lang==='ko'?'이름 *':'Full name *'}</label><input id="gName" value="${esc(state.guest.name||'')}" autocomplete="name"></div><div class="field"><label>${lang==='ko'?'연락처 *':'Phone *'}</label><input id="gPhone" value="${esc(state.guest.phone||'')}" inputmode="tel" autocomplete="tel"></div><div class="field full"><label>${lang==='ko'?'이메일 *':'Email *'}</label><input id="gEmail" value="${esc(state.guest.email||'')}" type="email" autocomplete="email"></div><div class="field full"><label>${lang==='ko'?'요청사항':'Requests'}</label><textarea id="gMemo">${esc(state.guest.memo||'')}</textarea></div></div>${state.service==='eeg'?eegConsents():perfConsents()}`}
 function perfConsents(){return `<div class="consents"><label><input type="checkbox" id="c1">${lang==='ko'?'예약·취소 규정에 동의합니다. (필수)':'I agree to the booking/cancellation policy. (required)'}</label><label><input type="checkbox" id="c2">${lang==='ko'?'개인정보 수집·이용에 동의합니다. (필수)':'I agree to the use of my booking details. (required)'}</label><label><input type="checkbox" id="c3">${lang==='ko'?'클래스·제품 소식 수신에 동의합니다. (선택)':'Send me class/product news. (optional)'}</label></div>`}
-function eegConsents(){return `<div class="consents"><label><input type="checkbox" id="c1">${lang==='ko'?'예약·취소 규정에 동의합니다. (필수)':'I agree to the booking/cancellation policy. (required)'}</label><label><input type="checkbox" id="c2">${lang==='ko'?'개인정보 수집·이용에 동의합니다. (필수)':'I agree to the use of my booking details. (required)'}</label><label><input type="checkbox" id="c4">${lang==='ko'?'EEG 센서 착용 및 세션 중 신호 측정에 동의합니다. (필수)':'I consent to wearing EEG sensors and recording session signals. (required)'}</label><label><input type="checkbox" id="c5">${lang==='ko'?'본 세션은 의료 진단·치료가 아닌 웰니스 체험임을 확인합니다. (필수)':'I understand this is a non-medical wellness experience, not diagnosis or treatment. (required)'}</label><label><input type="checkbox" id="c3">${lang==='ko'?'연구·서비스 소식 수신에 동의합니다. (선택)':'Send me research/service news. (optional)'}</label></div><div class="medical-note">${lang==='ko'?'POC 원칙: 예약 DB에는 예약·연락 정보와 동의 기록만 저장하고, EEG 원시데이터는 예약정보와 분리된 데이터 영역에서 별도 식별키로 관리하도록 설계합니다.':'POC principle: booking/contact data and consent records are stored separately from raw EEG data, linked only by a dedicated identifier.'}</div>`}
+function eegConsents(){return `<div class="consents"><label><input type="checkbox" id="c1">${lang==='ko'?'예약·취소 규정에 동의합니다. (필수)':'I agree to the booking/cancellation policy. (required)'}</label><label><input type="checkbox" id="c2">${lang==='ko'?'개인정보 수집·이용에 동의합니다. (필수)':'I agree to the use of my booking details. (required)'}</label><label><input type="checkbox" id="c4">${lang==='ko'?'EEG 센서 착용 및 세션 중 신호 측정에 동의합니다. (필수)':'I consent to wearing EEG sensors and recording session signals. (required)'}</label><label><input type="checkbox" id="c5">${lang==='ko'?'본 세션은 의료 진단·치료가 아닌 웰니스 체험임을 확인합니다. (필수)':'I understand this is a non-medical wellness experience, not diagnosis or treatment. (required)'}</label><label><input type="checkbox" id="c3">${lang==='ko'?'연구·서비스 소식 수신에 동의합니다. (선택)':'Send me research/service news. (optional)'}</label></div><div class="medical-note">${lang==='ko'?'예약 DB에는 예약·연락 정보와 동의 기록만 저장하고, EEG 원시데이터는 예약정보와 분리된 영역에서 별도 식별키로 관리합니다.':'Booking and consent records are stored separately from raw EEG data, linked only by a dedicated identifier.'}</div>`}
 function people(n){const s=SERVICES[state.service],remaining=Math.max(1,s.capacity-existingCount(state.date,state.time,s.id));state.people=Math.max(1,Math.min(state.people+n,s.groupMax,remaining));qs('#peopleN').textContent=state.people;renderSummary()}
 function syncGuest(){['Name','Phone','Email','Memo'].forEach(x=>{const el=qs('#g'+x);if(el)state.guest[x.toLowerCase()]=el.value});const c=qs('#country');if(c)state.guest.country=c.value}
 function validateDetails(){syncGuest();if(!state.guest.name||!state.guest.phone||!/^\S+@\S+\.\S+$/.test(state.guest.email||'')){toast(lang==='ko'?'이름·연락처·이메일을 확인해 주세요.':'Check name, phone and email.');return false}if(!qs('#c1')?.checked||!qs('#c2')?.checked){toast(lang==='ko'?'필수 동의 항목을 확인해 주세요.':'Accept the required terms.');return false}if(state.service==='eeg'&&(!qs('#c4')?.checked||!qs('#c5')?.checked)){toast(lang==='ko'?'EEG 세션 필수 동의를 확인해 주세요.':'Accept the required EEG session terms.');return false}return true}
@@ -161,7 +161,7 @@ function findBooking(){const code=qs('#lookupCode').value.trim();const b=getBook
 function downloadICS(id){const b=getBookings().find(x=>x.id===id);if(!b)return;const s=SERVICES[b.service];const start=new Date(`${b.date}T${b.time}:00+09:00`),end=new Date(start.getTime()+s.duration*60000);const fmt=d=>d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';const text=`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nUID:${b.code}@mediscent\nDTSTAMP:${fmt(new Date())}\nDTSTART:${fmt(start)}\nDTEND:${fmt(end)}\nSUMMARY:${b.serviceName}\nLOCATION:Insadong, Seoul\nEND:VEVENT\nEND:VCALENDAR`;const blob=new Blob([text],{type:'text/calendar'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=b.code+'.ics';a.click();URL.revokeObjectURL(a.href)}
 function openAdmin(){qs('#homeView').classList.add('hidden');qs('#bookingView').classList.add('hidden');qs('#adminView').classList.remove('hidden');qs('#footer').classList.add('hidden');qs('#mobileBar').classList.add('hidden');window.scrollTo(0,0)}
 function unlockAdmin(){if(qs('#pinInput').value!==CFG.adminPin){toast(lang==='ko'?'관리자 코드가 올바르지 않습니다.':'Incorrect admin code.');return}qs('#adminGate').classList.add('hidden');qs('#adminPanel').classList.remove('hidden');renderAdmin()}
-let adminFilter='all';function renderAdmin(){const arr=getBookings(),today=fmtDate(new Date()),month=today.slice(0,7),todayN=arr.filter(b=>b.date===today&&b.status!=='cancelled').length,weekGuests=arr.filter(b=>b.status!=='cancelled').reduce((n,b)=>n+b.people,0),rev=arr.filter(b=>b.createdAt.startsWith(month)&&b.status==='confirmed').reduce((n,b)=>n+(b.amount||0),0),requested=arr.filter(b=>b.status==='requested').length;const filt=arr.filter(b=>adminFilter==='all'||b.service===adminFilter);qs('#adminPanel').innerHTML=`<div class="admin-top"><h2>Unified Reservation Desk</h2><div class="grow"></div><button class="pill" onclick="exportCSV()">CSV</button><button class="pill" onclick="goHome()">HOME</button></div><div class="stats"><div class="stat"><small>${lang==='ko'?'오늘 예약':'Today'}</small><b>${todayN}</b></div><div class="stat"><small>${lang==='ko'?'총 참여 인원':'Guests'}</small><b>${weekGuests}</b></div><div class="stat"><small>${lang==='ko'?'확정 매출(POC)':'Confirmed revenue'}</small><b>${money(rev)}</b></div><div class="stat"><small>${lang==='ko'?'EEG 신청 대기':'EEG requests'}</small><b>${requested}</b></div></div><div class="filters"><button class="${adminFilter==='all'?'on':''}" onclick="setAdminFilter('all')">ALL</button><button class="${adminFilter==='perfume'?'on':''}" onclick="setAdminFilter('perfume')">PERFUME</button><button class="${adminFilter==='eeg'?'on':''}" onclick="setAdminFilter('eeg')">EEG</button></div><div class="tablewrap"><table><thead><tr><th>CODE</th><th>SERVICE</th><th>DATE / TIME</th><th>GUEST</th><th>PAX</th><th>AMOUNT</th><th>STATUS</th><th>UTM</th><th></th></tr></thead><tbody>${filt.length?filt.slice().reverse().map(b=>`<tr><td><strong>${b.code}</strong></td><td>${b.service==='perfume'?'SHIFTI Perfume':'Neuroscent EEG'}</td><td>${b.date}<br>${b.time}</td><td>${esc(b.name)}<br><small>${esc(b.phone)}</small></td><td>${b.people}</td><td>${b.amount==null?'—':money(b.amount)}</td><td><span class="status ${b.status}">${b.status}</span></td><td>${esc(b.utm?.campaign||'—')}</td><td class="admin-actions"><button onclick="cancelBooking('${b.id}')">Cancel</button></td></tr>`).join(''):`<tr><td colspan="9" style="text-align:center;padding:40px;color:#8a9694">No bookings yet.</td></tr>`}</tbody></table></div><div class="admin-note">POC: localStorage 기반. Production 전환 시 Bookings / Holds / Payments / Consents / Resources 테이블을 Supabase에 분리하고, EEG 원시데이터는 예약 DB와 분리 저장하는 구조를 권장합니다.</div>`}
+let adminFilter='all';function renderAdmin(){const arr=getBookings(),today=fmtDate(new Date()),month=today.slice(0,7),todayN=arr.filter(b=>b.date===today&&b.status!=='cancelled').length,weekGuests=arr.filter(b=>b.status!=='cancelled').reduce((n,b)=>n+b.people,0),rev=arr.filter(b=>b.createdAt.startsWith(month)&&b.status==='confirmed').reduce((n,b)=>n+(b.amount||0),0),requested=arr.filter(b=>b.status==='requested').length;const filt=arr.filter(b=>adminFilter==='all'||b.service===adminFilter);qs('#adminPanel').innerHTML=`<div class="admin-top"><h2>Unified Reservation Desk</h2><div class="grow"></div><button class="pill" onclick="exportCSV()">CSV</button><button class="pill" onclick="goHome()">HOME</button></div><div class="stats"><div class="stat"><small>${lang==='ko'?'오늘 예약':'Today'}</small><b>${todayN}</b></div><div class="stat"><small>${lang==='ko'?'총 참여 인원':'Guests'}</small><b>${weekGuests}</b></div><div class="stat"><small>${lang==='ko'?'확정 매출':'Confirmed revenue'}</small><b>${money(rev)}</b></div><div class="stat"><small>${lang==='ko'?'EEG 신청 대기':'EEG requests'}</small><b>${requested}</b></div></div><div class="filters"><button class="${adminFilter==='all'?'on':''}" onclick="setAdminFilter('all')">ALL</button><button class="${adminFilter==='perfume'?'on':''}" onclick="setAdminFilter('perfume')">PERFUME</button><button class="${adminFilter==='eeg'?'on':''}" onclick="setAdminFilter('eeg')">EEG</button></div><div class="tablewrap"><table><thead><tr><th>CODE</th><th>SERVICE</th><th>DATE / TIME</th><th>GUEST</th><th>PAX</th><th>AMOUNT</th><th>STATUS</th><th>UTM</th><th></th></tr></thead><tbody>${filt.length?filt.slice().reverse().map(b=>`<tr><td><strong>${b.code}</strong></td><td>${b.service==='perfume'?'SHIFTI Perfume':'Neuroscent EEG'}</td><td>${b.date}<br>${b.time}</td><td>${esc(b.name)}<br><small>${esc(b.phone)}</small></td><td>${b.people}</td><td>${b.amount==null?'—':money(b.amount)}</td><td><span class="status ${b.status}">${b.status}</span></td><td>${esc(b.utm?.campaign||'—')}</td><td class="admin-actions"><button onclick="cancelBooking('${b.id}')">Cancel</button></td></tr>`).join(''):`<tr><td colspan="9" style="text-align:center;padding:40px;color:#8a9694">No bookings yet.</td></tr>`}</tbody></table></div><div class="admin-note">POC: localStorage 기반. Production 전환 시 Bookings / Holds / Payments / Consents / Resources 테이블을 Supabase에 분리하고, EEG 원시데이터는 예약 DB와 분리 저장하는 구조를 권장합니다.</div>`}
 function setAdminFilter(f){adminFilter=f;renderAdmin()}function cancelBooking(id){let a=getBookings(),b=a.find(x=>x.id===id);if(!b)return;if(!confirm(lang==='ko'?'이 예약을 취소할까요?':'Cancel this booking?'))return;b.status='cancelled';localStorage.setItem('mediscent_bookings_v2',JSON.stringify(a));renderAdmin()}
 function exportCSV(){const a=getBookings(),cols=['code','service','date','time','name','phone','email','people','amount','status','createdAt'];const csv=[cols.join(','),...a.map(b=>cols.map(k=>'"'+String(b[k]??'').replaceAll('"','""')+'"').join(','))].join('\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),x=document.createElement('a');x.href=URL.createObjectURL(blob);x.download='mediscent_reservations.csv';x.click();URL.revokeObjectURL(x.href)}
 Object.assign(I18N,{
@@ -801,6 +801,265 @@ window.renderCalendar = function () {
       onclick="pickDate('${key}')"><b>${d}</b><small>${tag}</small></button>`;
   }
   days.innerHTML = h;
+};
+</script>
+
+<style id="ms-legal-style">
+.bizinfo{border-top:1px solid var(--line);margin-top:26px;padding-top:22px;flex:1 1 100%!important;width:100%!important;min-width:100%}
+#footer .foot{flex-wrap:wrap}
+.bizinfo .links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:14px}
+.bizinfo .links button{background:none;border:0;padding:0;color:var(--deep);font-size:12.5px;font-weight:600;cursor:pointer;text-underline-offset:3px}
+.bizinfo .links button:hover{text-decoration:underline}
+.bizinfo dl{display:flex;flex-wrap:wrap;gap:4px 18px;margin:0;font-size:11.5px;color:var(--cel);line-height:1.9}
+.bizinfo dl div{display:flex;gap:6px}
+.bizinfo dt{color:var(--cel);opacity:.75}
+.bizinfo dd{margin:0;color:var(--ink)}
+.bizinfo .copy{margin-top:12px;font-size:11px;color:var(--cel)}
+dialog#legal{border:0;border-radius:20px;padding:0;max-width:720px;width:calc(100% - 32px);max-height:82vh;box-shadow:var(--shadow)}
+dialog#legal::backdrop{background:rgba(20,31,27,.45)}
+#legal .lg-top{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:20px 26px;display:flex;align-items:center;gap:12px;z-index:2}
+#legal .lg-top h3{margin:0;font-size:17px;flex:1}
+#legal .lg-tabs{display:flex;gap:6px;padding:14px 26px 0;flex-wrap:wrap}
+#legal .lg-tabs button{border:1px solid var(--line);background:none;border-radius:999px;padding:7px 14px;font-size:12px;cursor:pointer}
+#legal .lg-tabs button.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+#legal .lg-body{padding:18px 26px 30px;overflow-y:auto;font-size:13px;line-height:1.85;color:var(--ink)}
+#legal .lg-body h4{margin:22px 0 6px;font-size:13.5px}
+#legal .lg-body h4:first-child{margin-top:4px}
+#legal .lg-body p,#legal .lg-body li{color:#4a5a54}
+#legal .lg-body ul{margin:6px 0;padding-left:18px}
+#legal .lg-body table{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;margin:10px 0;font-size:12.5px;word-break:break-word}
+#legal .lg-body th,#legal .lg-body td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+#legal .lg-body th{background:var(--mist);font-weight:600}
+#legal .lg-body .en{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);color:var(--cel);font-size:12px}
+@media (max-width:600px){#legal .lg-body{padding:16px 18px 26px}#legal .lg-top{padding:16px 18px}#legal .lg-body th,#legal .lg-body td{padding:7px 8px;font-size:11.5px}}
+</style>
+
+<dialog id="legal">
+  <div class="lg-top"><h3 id="lgTitle">이용약관</h3><button class="pill" onclick="document.getElementById('legal').close()">닫기</button></div>
+  <div class="lg-tabs">
+    <button data-k="terms" onclick="openLegal('terms')">이용약관</button>
+    <button data-k="privacy" onclick="openLegal('privacy')">개인정보처리방침</button>
+    <button data-k="refund" onclick="openLegal('refund')">취소 · 환불 규정</button>
+  </div>
+  <div class="lg-body" id="lgBody"></div>
+</dialog>
+
+<script>
+/* =====================================================================
+   사업자 정보 · 약관 · 개인정보처리방침
+   아래 BIZ 값만 채우면 하단 표기와 문서에 모두 자동 반영됩니다.
+   ===================================================================== */
+const BIZ = {
+  company   : '주식회사 메디센츠',
+  ceo       : '[[대표자명]]',
+  bizNo     : '[[사업자등록번호]]',
+  mailOrder : '[[통신판매업신고번호]]',          // 예: 제2026-경기구리-0000호
+  addr      : '경기도 구리시 갈매순환로154 현대테라타워 A동 1038호',
+  shop      : '서울 종로구 인사동길 44 쌈지길 2층 SHIFTI',
+  tel       : '070-4365-4807',
+  email     : 'booking@mediscent.co.kr',
+  privacyOfficer : '[[개인정보 보호책임자]]',
+  host      : 'GitHub, Inc. · Supabase Inc.',
+  effective : '2026년 9월 26일'
+};
+
+/* ── 하단 사업자 정보 ─────────────────────────────────── */
+(function renderBizInfo(){
+  const foot = document.querySelector('#footer .foot');
+  if (!foot || document.querySelector('.bizinfo')) return;
+  const box = document.createElement('div');
+  box.className = 'bizinfo';
+  box.style.cssText = 'grid-column:1/-1;flex:1 0 100%;width:100%';
+  box.innerHTML = `
+    <div class="links">
+      <button onclick="openLegal('terms')">이용약관</button>
+      <button onclick="openLegal('privacy')"><strong>개인정보처리방침</strong></button>
+      <button onclick="openLegal('refund')">취소 · 환불 규정</button>
+    </div>
+    <dl>
+      <div><dt>상호</dt><dd>${BIZ.company}</dd></div>
+      <div><dt>대표자</dt><dd>${왕지현}</dd></div>
+      <div><dt>사업자등록번호</dt><dd>${795-86-03486}</dd></div>
+      <div><dt>통신판매업신고</dt><dd>${ 2026-경기구리-0318}</dd></div>
+      <div><dt>주소</dt><dd>${BIZ.addr}</dd></div>
+      <div><dt>전화</dt><dd>${BIZ.tel}</dd></div>
+      <div><dt>이메일</dt><dd>${BIZ.email}</dd></div>
+      <div><dt>개인정보 보호책임자</dt><dd>${왕지현}</dd></div>
+    
+    </dl>
+    <div class="copy">© ${new Date().getFullYear()} ${BIZ.company}. All rights reserved.</div>`;
+  foot.appendChild(box);
+})();
+
+/* ── 문서 본문 ────────────────────────────────────────── */
+const LEGAL = {
+  terms: { title:'이용약관', html: `
+<h4>제1조 (목적)</h4>
+<p>본 약관은 ${(주)메디센츠}(이하 "회사")가 운영하는 예약 사이트(booking.mediscent.co.kr)를 통해 제공하는 SHIFTI 향수 클래스 및 Neuroscent EEG 세션(이하 "서비스")의 예약·이용·결제·취소에 관한 회사와 이용자의 권리·의무를 정함을 목적으로 합니다.</p>
+
+<h4>제2조 (서비스의 내용)</h4>
+<ul>
+<li>향수 클래스: 전문 조향사의 안내에 따라 향료를 시향·블렌딩하여 완제품을 제작하는 오프라인 체험 프로그램</li>
+<li>Neuroscent EEG 세션: EEG 기반 생체신호를 활용한 웰니스 체험 프로그램이며, <strong>의료 진단·치료·처방을 목적으로 하지 않습니다.</strong></li>
+<li>장소: ${BIZ.shop}</li>
+</ul>
+
+<h4>제3조 (예약의 성립)</h4>
+<ul>
+<li>이용자가 일시·프로그램·인원을 선택하고 결제를 완료한 후, 회사가 결제대행사 서버를 통해 결제 내역을 검증하고 예약 확정 안내를 발송한 시점에 예약이 성립합니다.</li>
+<li>결제 단계에서 좌석은 최대 10분간 임시 확보되며, 시간 내 결제가 완료되지 않으면 자동 해제됩니다.</li>
+<li>결제 금액이 회사가 산정한 금액과 일치하지 않는 경우 예약은 성립하지 않으며, 해당 결제는 즉시 취소됩니다.</li>
+<li>가격이 사전에 고지되지 않은 프로그램은 신청 접수 후 회사의 확인을 거쳐 예약이 확정됩니다.</li>
+</ul>
+
+<h4>제4조 (이용요금)</h4>
+<p>요금은 예약 화면에 표시된 금액을 따르며 부가세가 포함되어 있습니다. 모든 결제는 원화(KRW)로 청구되고, 해외 발행 카드는 카드사 환율과 수수료가 별도로 적용될 수 있습니다.</p>
+
+<h4>제5조 (이용자의 의무)</h4>
+<ul>
+<li>예약 시 정확한 이름·연락처·이메일을 입력해야 하며, 허위 정보로 인한 안내 누락의 책임은 이용자에게 있습니다.</li>
+<li>예약 시작 10분 전까지 매장에 도착해야 하며, 지연 시 잔여 시간만 진행되고 시간 연장이나 요금 감액은 불가합니다.</li>
+<li>향료 및 알코올 성분에 대한 <strong>알레르기·과민 반응 이력이 있는 경우 반드시 사전에 고지</strong>해야 합니다. 미고지로 발생한 사고에 대해 회사는 책임을 지지 않습니다.</li>
+<li>만 14세 미만은 보호자 동행 하에만 참여할 수 있습니다.</li>
+<li>임신 중이거나 호흡기 질환이 있는 경우 참여 전 회사에 문의해 주시기 바랍니다.</li>
+</ul>
+
+<h4>제6조 (회사의 의무)</h4>
+<p>회사는 안전한 환경에서 프로그램을 제공하며, 천재지변·시설 사고·강사 사정 등 회사 사유로 프로그램을 제공할 수 없는 경우 전액 환불하거나 이용자와 협의하여 일정을 변경합니다.</p>
+
+<h4>제7조 (취소 및 환불)</h4>
+<p>취소·환불은 별도의 「취소 · 환불 규정」을 따릅니다.</p>
+
+<h4>제8조 (지식재산권 및 촬영)</h4>
+<p>프로그램에서 제공되는 레시피·교육 자료의 권리는 회사에 있습니다. 회사가 홍보 목적으로 촬영을 진행하는 경우 사전에 동의를 구하며, 거부하실 수 있습니다.</p>
+
+<h4>제9조 (면책)</h4>
+<p>회사는 이용자의 고의·과실, 사전 미고지 건강 상태, 천재지변 등 회사의 합리적 통제를 벗어난 사유로 발생한 손해에 대해 책임을 지지 않습니다.</p>
+
+<h4>제10조 (분쟁 해결)</h4>
+<p>본 약관은 대한민국 법률에 따라 해석되며, 분쟁이 발생한 경우 회사 본점 소재지를 관할하는 법원을 관할 법원으로 합니다. 소비자 분쟁은 「소비자기본법」에 따른 분쟁조정기구의 조정을 신청할 수 있습니다.</p>
+
+<p style="margin-top:22px">시행일: ${BIZ.effective}</p>
+
+<div class="en"><strong>English summary.</strong> A booking is confirmed only after the payment is verified on our server and a confirmation email is issued. Seats are held for up to 10 minutes during checkout. All prices include VAT and are charged in Korean won. Please arrive 10 minutes before your session and tell us in advance about any fragrance or alcohol allergy. Cancellation terms are set out in the Refund Policy. EEG sessions are a non-medical wellness experience.</div>
+` },
+
+  privacy: { title:'개인정보처리방침', html: `
+<p>${BIZ.company}(이하 "회사")는 「개인정보 보호법」 및 「정보통신망 이용촉진 및 정보보호 등에 관한 법률」을 준수하며, 예약 서비스 이용자의 개인정보를 다음과 같이 처리합니다.</p>
+
+<h4>1. 수집 항목 및 방법</h4>
+<table>
+<tr><th>구분</th><th>수집 항목</th></tr>
+<tr><td>예약 시 (필수)</td><td>이름, 휴대전화번호, 이메일 주소, 예약 일시·프로그램·인원</td></tr>
+<tr><td>예약 시 (선택)</td><td>국가/지역, 요청사항, 마케팅 수신 동의 여부</td></tr>
+<tr><td>결제 시</td><td>결제 승인 정보(결제수단·승인번호·금액). <strong>회사는 카드번호 등 결제수단 정보를 저장하지 않으며</strong> 결제대행사가 처리합니다.</td></tr>
+<tr><td>자동 생성</td><td>접속 경로(UTM) 정보</td></tr>
+</table>
+<p>개인정보는 이용자가 예약 화면에 직접 입력하는 방식으로만 수집합니다.</p>
+
+<h4>2. 수집·이용 목적</h4>
+<ul>
+<li>예약 접수 및 확정, 예약 내역 확인</li>
+<li>결제, 환불 및 정산 처리</li>
+<li>예약 안내·변경·취소 통지 발송(이메일, 알림톡/문자)</li>
+<li>고객 문의 응대 및 분쟁 처리</li>
+<li>(동의한 경우에 한함) 신규 프로그램 및 소식 안내</li>
+</ul>
+
+<h4>3. 보유 및 이용 기간</h4>
+<p>수집 목적 달성 후 지체 없이 파기합니다. 다만 관계 법령에 따라 아래 기간 동안 보관합니다.</p>
+<table>
+<tr><th>보관 항목</th><th>기간</th><th>근거</th></tr>
+<tr><td>계약 또는 청약철회 등에 관한 기록</td><td>5년</td><td>전자상거래법</td></tr>
+<tr><td>대금결제 및 재화 공급에 관한 기록</td><td>5년</td><td>전자상거래법</td></tr>
+<tr><td>소비자 불만 또는 분쟁처리에 관한 기록</td><td>3년</td><td>전자상거래법</td></tr>
+<tr><td>마케팅 수신 동의 기록</td><td>동의 철회 시까지</td><td>정보통신망법</td></tr>
+</table>
+
+<h4>4. 제3자 제공</h4>
+<p>회사는 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다만 법령에 따른 요구가 있거나 이용자가 사전에 동의한 경우에 한해 제공할 수 있습니다.</p>
+
+<h4>5. 처리 위탁 및 국외 이전</h4>
+<table>
+<tr><th>수탁자</th><th>위탁 업무</th><th>보관 국가</th></tr>
+<tr><td>㈜포트원 및 각 결제대행사(PG)</td><td>결제 및 환불 처리</td><td>대한민국</td></tr>
+<tr><td>Supabase Inc.</td><td>예약 데이터 보관</td><td>대한민국 리전(서울)</td></tr>
+<tr><td>GitHub, Inc.</td><td>웹사이트 호스팅</td><td>미국</td></tr>
+<tr><td>Resend, Inc.</td><td>예약 안내 이메일 발송</td><td>미국</td></tr>
+<tr><td>㈜솔라피</td><td>알림톡·문자 발송</td><td>대한민국</td></tr>
+</table>
+<p>국외 이전 항목은 이름·이메일 주소 및 예약 내역이며, 서비스 제공 기간 동안 보관 후 파기됩니다. 이전은 서비스 이용 시점에 정보통신망을 통해 이루어집니다. 이용자는 국외 이전을 거부할 수 있으나, 이 경우 온라인 예약 및 안내 발송 서비스를 이용할 수 없습니다.</p>
+
+<h4>6. 이용자의 권리</h4>
+<p>이용자는 언제든지 개인정보의 열람·정정·삭제·처리정지를 요구할 수 있습니다. 요청은 ${BIZ.email} 또는 ${BIZ.tel}로 접수하며, 회사는 지체 없이 조치합니다. 다만 제3조의 법정 보관 의무가 있는 정보는 해당 기간 동안 삭제가 제한될 수 있습니다.</p>
+
+<h4>7. 파기 절차 및 방법</h4>
+<p>보유 기간이 경과한 개인정보는 전자적 파일의 경우 복구할 수 없는 방법으로 영구 삭제하며, 출력물은 분쇄하거나 소각합니다.</p>
+
+<h4>8. 안전성 확보 조치</h4>
+<ul>
+<li>전 구간 HTTPS 암호화 통신</li>
+<li>예약 데이터 접근 권한을 인증된 담당 직원으로 제한(행 수준 보안 적용)</li>
+<li>예약 조회 시 예약번호와 본인 연락처를 함께 확인하는 방식으로 타인 열람 차단</li>
+<li>결제수단 정보 비보유</li>
+</ul>
+
+<h4>9. 쿠키 및 브라우저 저장소</h4>
+<p>회사는 언어 설정과 관리자 로그인 상태 유지를 위해 브라우저 저장소를 사용하며, 광고 목적의 추적은 하지 않습니다.</p>
+
+<h4>10. 개인정보 보호책임자</h4>
+<p>성명: ${왕지현}<br>연락처: ${070-4365-7807} / ${justina0726@gmail.com}</p>
+<p>개인정보 침해에 관한 상담이 필요한 경우 개인정보침해신고센터(privacy.kisa.or.kr, 국번없이 118), 대검찰청 사이버수사과(1301), 경찰청 사이버수사국(ecrm.police.go.kr, 182)에 문의하실 수 있습니다.</p>
+
+<p style="margin-top:22px">시행일: ${BIZ.effective}</p>
+
+<div class="en"><strong>English summary.</strong> We collect your name, phone number, email and booking details solely to confirm and deliver your reservation, and to process payment or refund. Card details are handled by our payment provider and are never stored by us. Records are kept for the periods required by Korean e-commerce law (up to 5 years). Data is processed by PortOne (payments, KR), Supabase (database, Seoul region), GitHub (hosting, US), Resend (email, US) and Solapi (messaging, KR). You may request access, correction, deletion or suspension at any time by emailing ${BIZ.email}.</div>
+` },
+
+  refund: { title:'취소 · 환불 규정', html: `
+<h4>1. 이용자 사정에 의한 취소</h4>
+<table>
+<tr><th>취소 시점</th><th>환불 비율</th></tr>
+<tr><td>이용일 3일 전까지</td><td>결제 금액의 100%</td></tr>
+<tr><td>이용일 2일 전</td><td>결제 금액의 70%</td></tr>
+<tr><td>이용일 1일 전</td><td>결제 금액의 50%</td></tr>
+<tr><td>이용 당일 취소 또는 미방문(노쇼)</td><td>환불 불가</td></tr>
+</table>
+<p>기준 시점은 한국 표준시(KST)를 따릅니다.</p>
+
+<h4>2. 회사 사정에 의한 취소</h4>
+<p>천재지변, 시설 사고, 강사 사정 등 회사 사유로 프로그램이 진행되지 못한 경우 결제 금액 전액을 환불하거나, 이용자와 협의하여 일정을 변경합니다.</p>
+
+<h4>3. 이용 중 중단</h4>
+<p>프로그램 시작 후 이용자의 사정으로 중단하는 경우, 이미 소분·개봉된 향료 및 용기 비용을 제외한 금액을 환불합니다.</p>
+
+<h4>4. 인원 변경</h4>
+<p>예약 인원 감소는 이용일 1일 전까지 신청 시 감소분에 대해 제1항의 기준을 적용해 환불합니다. 인원 추가는 잔여 좌석이 있는 경우에만 가능합니다.</p>
+
+<h4>5. 환불 절차</h4>
+<ul>
+<li>취소 신청: ${BIZ.email} 또는 ${BIZ.tel}, 카카오톡 채널</li>
+<li>환불은 결제하신 수단으로 처리되며, 카드 결제는 승인 취소 후 카드사 영업일 기준 3~5일 이내 반영됩니다.</li>
+<li>해외 카드 결제의 경우 카드사 환율 변동으로 결제 금액과 환불 금액에 차이가 발생할 수 있습니다.</li>
+</ul>
+
+<h4>6. 관련 법령</h4>
+<p>본 규정에 정하지 않은 사항은 「전자상거래 등에서의 소비자보호에 관한 법률」 및 「소비자분쟁해결기준」(공정거래위원회 고시)을 따릅니다.</p>
+
+<p style="margin-top:22px">시행일: ${BIZ.effective}</p>
+
+<div class="en"><strong>English summary.</strong> Full refund up to 3 days before your session, 70% at 2 days, 50% at 1 day, and no refund for same-day cancellation or no-show (KST). If we cancel, you receive a full refund. Refunds are returned to the original payment method within 3–5 business days; exchange-rate differences may apply to foreign cards.</div>
+` }
+};
+
+window.openLegal = function (key) {
+  const doc = LEGAL[key] || LEGAL.terms;
+  document.getElementById('lgTitle').textContent = doc.title;
+  document.getElementById('lgBody').innerHTML = doc.html;
+  document.querySelectorAll('#legal .lg-tabs button').forEach(b => b.classList.toggle('on', b.dataset.k === key));
+  const d = document.getElementById('legal');
+  if (!d.open) d.showModal();
+  document.getElementById('lgBody').scrollTop = 0;
 };
 </script>
 
