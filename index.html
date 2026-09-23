@@ -655,14 +655,24 @@ window.resendNotify = async function (code, kind) {
   const k = kind || (row.status === 'refunded' ? 'refunded'
                    : row.status === 'cancelled' ? 'cancelled'
                    : row.status === 'requested' ? 'requested' : 'confirmed');
+  const send = () => fetch(fnUrl('notify'), { method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (TOKEN || BE.supabaseKey) },
+    body: JSON.stringify({ code, kind: k }) });
   try {
-    const r = await fetch(fnUrl('notify'), { method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (TOKEN || BE.supabaseKey) },
-      body: JSON.stringify({ code, kind: k }) });
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(d.error || 'failed');
+    let r = await send();
+    if (r.status === 401 && await refreshToken()) r = await send();   // 로그인 만료면 갱신 후 재시도
+    const txt = await r.text();
+    let d = {}; try { d = JSON.parse(txt); } catch (e) {}
+    if (!r.ok) {                                                      // 함수가 거부한 이유를 그대로 보여준다
+      const why = (txt || '').slice(0, 80) || r.status;
+      throw new Error(T(`함수 응답 ${r.status} · ${why}`, `Function said ${r.status} · ${why}`));
+    }
     toast(T(`메일 ${d.email ? '성공' : '실패'} · 알림톡 ${d.alimtalk ? '성공' : '실패'}`,
             `Email ${d.email ? 'sent' : 'failed'} · KakaoTalk ${d.alimtalk ? 'sent' : 'failed'}`));
+    if (!d.email && d.detail && d.detail.mail && d.detail.mail.detail) {
+      console.warn('[MEDISCENT] mail detail:', d.detail.mail.detail);  // 자세한 원인은 콘솔에
+      setTimeout(() => toast(T('메일 실패 원인: ', 'Mail error: ') + String(d.detail.mail.detail).slice(0, 90)), 3400);
+    }
     await loadRows(); renderAdmin();
   } catch (e) { toast(T('발송 실패: ', 'Send failed: ') + errMsg(e)); }
 };
