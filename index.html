@@ -664,7 +664,7 @@ window.resendNotify = async function (code, kind) {
     const txt = await r.text();
     let d = {}; try { d = JSON.parse(txt); } catch (e) {}
     if (!r.ok) {                                                      // 함수가 거부한 이유를 그대로 보여준다
-      const why = (d && d.error) ? d.error : ((txt || '').slice(0, 80) || r.status);
+      const why = (txt || '').slice(0, 80) || r.status;
       throw new Error(T(`함수 응답 ${r.status} · ${why}`, `Function said ${r.status} · ${why}`));
     }
     toast(T(`메일 ${d.email ? '성공' : '실패'} · 알림톡 ${d.alimtalk ? '성공' : '실패'}`,
@@ -1672,7 +1672,7 @@ window.setLang = (function (orig) {
 /* =====================================================================
    시스템 점검 — 무엇이 설치됐고 무엇이 남았는지 관리자 화면에서 확인
    ===================================================================== */
-const PAGE_VERSION = '2026-09-23 16:45';   // 이 값이 관리자 화면에 표시됩니다
+const PAGE_VERSION = '2026-09-23 16:35';   // 이 값이 관리자 화면에 표시됩니다
 const SYS = { rows: null, busy: false };
 
 async function sysProbe() {
