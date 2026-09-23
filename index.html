@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ko">
 <head>
@@ -93,6 +92,12 @@ body{font-size:16px;line-height:1.6}body:before{display:none}button,input,textar
   <article class="service-card perf"><div class="texture"></div><div class="svc-top"><span class="svc-no">01 · SHIFTI</span><span class="svc-badge">PERFUME CLASS</span></div><div class="svc-spacer"></div><h3><span>CREATE YOUR OWN SCENT</span><span data-t="perf.name">향수 클래스</span></h3><p data-t="perf.desc">다양한 향료를 직접 시향하고 블렌딩해 세상에 하나뿐인 나만의 향수를 완성합니다.</p><div class="svc-meta"><span>20-30 MIN</span><span>MAX 10</span><span>30ml · 50ml</span></div><button class="btn" onclick="startBooking('perfume')" data-t="book.now">예약하기 →</button></article>
   <article class="service-card neuro"><div class="texture"></div><div class="eeg-viz" aria-hidden="true"><svg viewBox="0 0 320 240"><circle cx="190" cy="118" r="86"/><circle cx="190" cy="118" r="61"/><circle cx="190" cy="118" r="35"/><circle class="node" cx="126" cy="73" r="4"/><circle class="node" cx="211" cy="40" r="4"/><circle class="node" cx="260" cy="105" r="4"/><circle class="node" cx="223" cy="176" r="4"/><path class="wave" d="M12 148 C28 148 34 118 46 118 S61 168 72 168 S86 96 98 96 S112 145 126 145 S141 129 152 129 S166 155 180 155 S195 103 210 103 S225 142 238 142 S253 119 268 119 S284 152 307 152"/></svg></div><div class="svc-top"><span class="svc-no">02 · MEDISCENT LAB</span><span class="svc-badge">EEG SESSION</span></div><div class="svc-spacer"></div><h3><span>EEG × SCENT EXPERIENCE</span><span data-t="eeg.name">EEG 향기 세션</span></h3><p data-t="eeg.desc">EEG 센서를 착용하고 향을 경험하며, 세션 중 나타나는 생체신호 변화를 웰니스 관점에서 관찰합니다.</p><div class="svc-meta"><span>1:1 SESSION</span><span>EEG</span><span>NON-MEDICAL</span></div><button class="btn" onclick="startBooking('eeg')" data-t="book.session">세션 예약하기 →</button></article>
 </div></div></section>
+<section class="reviews-sec hidden" id="reviews"><div class="shell">
+  <div class="rv-head"><div><div class="eyebrow">REVIEWS</div><h2 data-t="rv.title">다녀가신 분들의 이야기</h2></div><div class="rv-score" id="rvScore"></div></div>
+  <div class="rv-tools" id="rvTools"></div>
+  <div class="rv-grid" id="rvGrid"></div>
+  <div class="rv-more" id="rvMore"></div>
+</div></section>
 <section class="location-sec"><div class="shell"><div class="loc-card" id="location">
   <div class="svc-top"><span class="svc-no">LOCATION</span><span class="svc-badge">INSADONG</span></div>
   <div class="map-frame"><div class="map-fallback"><b>SHIFTI</b><span>인사동 쌈지길 2층</span></div><iframe title="SHIFTI 쌈지길 위치 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
@@ -159,12 +164,12 @@ function eegConsents(){return `<div class="consents"><label><input type="checkbo
 function people(n){const s=SERVICES[state.service],remaining=Math.max(1,s.capacity-existingCount(state.date,state.time,s.id));state.people=Math.max(1,Math.min(state.people+n,s.groupMax,remaining));qs('#peopleN').textContent=state.people;renderSummary()}
 function syncGuest(){['Name','Phone','Email','Memo'].forEach(x=>{const el=qs('#g'+x);if(el)state.guest[x.toLowerCase()]=el.value});const c=qs('#country');if(c)state.guest.country=c.value}
 function validateDetails(){syncGuest();if(!state.guest.name||!state.guest.phone||!/^\S+@\S+\.\S+$/.test(state.guest.email||'')){toast(lang==='ko'?'이름·연락처·이메일을 확인해 주세요.':'Check name, phone and email.');return false}if(!qs('#c1')?.checked||!qs('#c2')?.checked){toast(lang==='ko'?'필수 동의 항목을 확인해 주세요.':'Accept the required terms.');return false}if(state.service==='eeg'&&(!qs('#c4')?.checked||!qs('#c5')?.checked)){toast(lang==='ko'?'EEG 세션 필수 동의를 확인해 주세요.':'Accept the required EEG session terms.');return false}return true}
-function confirmPane(){startHold();const s=SERVICES[state.service],pl=s.plans.find(x=>x.id===state.plan);return head(lang==='ko'?'예약 내용을 확인하세요':'Review your booking',s.payment?(lang==='ko'?'결제 후 서버에서 결제 내역을 검증하면 예약이 확정됩니다.':'Your booking is confirmed once we verify the payment on our server.'):(lang==='ko'?'EEG 세션은 결제 없이 신청으로 접수되며, 담당자 확인 후 확정 안내를 드립니다.':'EEG sessions are submitted as a request; our team will confirm by email.'))+`<div class="ticket"><div class="ticket-code"><b>${s.brand}</b><span class="service-chip">${s.chip}</span></div><dl><dt>${lang==='ko'?'서비스':'Service'}</dt><dd>${tObj(pl.name)}</dd><dt>${lang==='ko'?'일시':'When'}</dt><dd>${state.date} · ${state.time}</dd><dt>${lang==='ko'?'인원':'Guests'}</dt><dd>${state.people}</dd><dt>${lang==='ko'?'예약자':'Guest'}</dt><dd>${esc(state.guest.name||'')}</dd><dt>${lang==='ko'?'금액':'Amount'}</dt><dd>${pl.price==null?(lang==='ko'?'운영가 설정 전':'Price TBD'):money(pl.price*state.people)}</dd></dl></div><div class="medical-note">${s.payment?(lang==='ko'?'결제가 확인되면 좌석이 확정되고 예약번호가 발급됩니다. 예약번호는 방문 시 제시해 주세요.':'Your seat is secured once the payment is verified, and a booking code is issued right away.'):(lang==='ko'?'EEG 가격·결제정책 확정 후 동일한 PG 결제 파이프라인을 활성화할 수 있습니다.':'The same PG pipeline can be enabled once EEG pricing and payment policy are finalized.')}</div>`}
+function confirmPane(){startHold();const s=SERVICES[state.service],pl=s.plans.find(x=>x.id===state.plan);return head(lang==='ko'?'예약 내용을 확인하세요':'Review your booking',s.payment?(!payLive()?(lang==='ko'?'예약을 신청하시면 좌석이 바로 확보되고, 결제는 방문하시는 날 매장에서 진행합니다.':'Your seat is held as soon as you apply; you pay at the studio on the day.'):(lang==='ko'?'결제 후 서버에서 결제 내역을 검증하면 예약이 확정됩니다.':'Your booking is confirmed once we verify the payment on our server.')):(lang==='ko'?'EEG 세션은 결제 없이 신청으로 접수되며, 담당자 확인 후 확정 안내를 드립니다.':'EEG sessions are submitted as a request; our team will confirm by email.'))+`<div class="ticket"><div class="ticket-code"><b>${s.brand}</b><span class="service-chip">${s.chip}</span></div><dl><dt>${lang==='ko'?'서비스':'Service'}</dt><dd>${tObj(pl.name)}</dd><dt>${lang==='ko'?'일시':'When'}</dt><dd>${state.date} · ${state.time}</dd><dt>${lang==='ko'?'인원':'Guests'}</dt><dd>${state.people}</dd><dt>${lang==='ko'?'예약자':'Guest'}</dt><dd>${esc(state.guest.name||'')}</dd><dt>${lang==='ko'?'금액':'Amount'}</dt><dd>${pl.price==null?(lang==='ko'?'운영가 설정 전':'Price TBD'):money(pl.price*state.people)}</dd></dl></div><div class="medical-note">${s.payment?(!payLive()?(lang==='ko'?'온라인 결제는 준비 중입니다. 예약번호가 바로 발급되며, 방문 시 예약번호를 보여주시고 매장에서 결제해 주세요.':'Online payment is coming soon. You get a booking code right away — show it at the studio and pay there.'):(lang==='ko'?'결제가 확인되면 좌석이 확정되고 예약번호가 발급됩니다. 예약번호는 방문 시 제시해 주세요.':'Your seat is secured once the payment is verified, and a booking code is issued right away.')):(lang==='ko'?'EEG 가격·결제정책 확정 후 동일한 PG 결제 파이프라인을 활성화할 수 있습니다.':'The same PG pipeline can be enabled once EEG pricing and payment policy are finalized.')}</div>`}
 function startHold(){if(state.holdUntil&&state.holdUntil>Date.now())return;state.holdUntil=Date.now()+CFG.holdMinutes*60000;clearInterval(holdTimer);holdTimer=setInterval(()=>{renderHoldOnly()},1000)}
 function renderHoldOnly(){const el=qs('#holdTime');if(!el)return;let sec=Math.max(0,Math.floor((state.holdUntil-Date.now())/1000));el.textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;if(sec<=0){clearInterval(holdTimer);toast(lang==='ko'?'좌석 HOLD 시간이 만료되었습니다.':'Your hold expired.');state.step=1;state.holdUntil=null;renderBooking()}}
 function bindAfterRender(){qsa(".field").forEach(f=>{const input=f.querySelector("input,select,textarea"),label=f.querySelector("label");if(input&&label)label.htmlFor=input.id});if(state.step===0)renderCalendar();if(state.step===3){const c=qs('#country');if(c&&state.guest.country)c.value=state.guest.country}renderSummary()}
-function renderSummary(){const s=SERVICES[state.service];if(!s)return;const pl=s.plans.find(x=>x.id===state.plan),sum=qs('#summary');if(!sum)return;const total=pl?.price!=null?pl.price*state.people:null;let cta=ctaText();sum.innerHTML=`<div class="sum-head">Reservation Summary</div><div class="sum-service"><small>${s.brand}</small><b>${tObj(s.title)}</b></div><div class="row"><span>${lang==='ko'?'날짜':'Date'}</span><span>${state.date||'—'}</span></div><div class="row"><span>${lang==='ko'?'시간':'Time'}</span><span>${state.time||'—'}</span></div><div class="row"><span>${lang==='ko'?'프로그램':'Program'}</span><span>${pl?tObj(pl.name):'—'}</span></div><div class="row"><span>${lang==='ko'?'인원':'Guests'}</span><span>${state.people}</span></div><div class="total"><span>${lang==='ko'?'예상 결제':'Estimated total'}</span><b>${total==null?'—':money(total)}</b></div>${state.step===4?`<div class="hold">${lang==='ko'?'좌석 홀드 시간':'Seat held for'} · <b id="holdTime">${holdText()}</b></div>`:''}<button class="btn primary full" onclick="nextStep()">${cta}</button><p class="sum-note">${(state.service==='eeg'?(lang==='ko'?'신청이 접수되면 담당자가 일정을 확인한 뒤 확정 안내를 메일로 보내드립니다.':'Once you apply, our team will check the schedule and email you a confirmation.'):(lang==='ko'?'결제가 확인되면 좌석이 확정되고 예약 확인 메일이 발송됩니다. 변경·취소는 이용 1일 전까지 가능합니다.':'Your seat is confirmed once payment is verified and a confirmation email is sent. Changes are possible until one day before.'))}</p>`;const mb=qs('#mobileCta');if(mb)mb.textContent=cta;setTimeout(renderHoldOnly,0)}
-function ctaText(){if(state.step<4)return lang==='ko'?'다음 →':'Continue →';const s=SERVICES[state.service];return s.payment?(lang==='ko'?'결제하고 예약 확정':'Pay & confirm'):(lang==='ko'?'예약 신청':'Submit reservation')}
+function renderSummary(){const s=SERVICES[state.service];if(!s)return;const pl=s.plans.find(x=>x.id===state.plan),sum=qs('#summary');if(!sum)return;const total=pl?.price!=null?pl.price*state.people:null;let cta=ctaText();sum.innerHTML=`<div class="sum-head">Reservation Summary</div><div class="sum-service"><small>${s.brand}</small><b>${tObj(s.title)}</b></div><div class="row"><span>${lang==='ko'?'날짜':'Date'}</span><span>${state.date||'—'}</span></div><div class="row"><span>${lang==='ko'?'시간':'Time'}</span><span>${state.time||'—'}</span></div><div class="row"><span>${lang==='ko'?'프로그램':'Program'}</span><span>${pl?tObj(pl.name):'—'}</span></div><div class="row"><span>${lang==='ko'?'인원':'Guests'}</span><span>${state.people}</span></div><div class="total"><span>${lang==='ko'?'예상 결제':'Estimated total'}</span><b>${total==null?'—':money(total)}</b></div>${state.step===4?`<div class="hold">${lang==='ko'?'좌석 홀드 시간':'Seat held for'} · <b id="holdTime">${holdText()}</b></div>`:''}<button class="btn primary full" onclick="nextStep()">${cta}</button><p class="sum-note">${(state.service==='eeg'?(lang==='ko'?'신청이 접수되면 담당자가 일정을 확인한 뒤 확정 안내를 메일로 보내드립니다.':'Once you apply, our team will check the schedule and email you a confirmation.'):(!payLive()?(lang==='ko'?'결제는 방문 시 매장에서 진행합니다. 변경·취소는 이용 1일 전까지 연락 주세요.':'Payment is taken at the studio. Please contact us at least one day ahead to change or cancel.'):(lang==='ko'?'결제가 확인되면 좌석이 확정되고 예약 확인 메일이 발송됩니다. 변경·취소는 이용 1일 전까지 가능합니다.':'Your seat is confirmed once payment is verified and a confirmation email is sent. Changes are possible until one day before.')))}</p>`;const mb=qs('#mobileCta');if(mb)mb.textContent=cta;setTimeout(renderHoldOnly,0)}
+function ctaText(){if(state.step<4)return lang==='ko'?'다음 →':'Continue →';const s=SERVICES[state.service];return s.payment?(!payLive()?(lang==='ko'?'예약 신청 (현장 결제)':'Reserve · pay at studio'):(lang==='ko'?'결제하고 예약 확정':'Pay & confirm')):(lang==='ko'?'예약 신청':'Submit reservation')}
 function holdText(){if(!state.holdUntil)return '10:00';let sec=Math.max(0,Math.floor((state.holdUntil-Date.now())/1000));return `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`}
 function nextStep(){if(state.step===0){toast(lang==='ko'?'날짜를 선택해 주세요.':'Choose a date.');return}if(state.step===1){toast(lang==='ko'?'시간을 선택해 주세요.':'Choose a time.');return}if(state.step===2){toast(lang==='ko'?'프로그램을 선택해 주세요.':'Choose a program.');return}if(state.step===3){if(!validateDetails())return;state.step=4;renderBooking();return}if(state.step===4)completeBooking()}
 function completeBooking(){if(state.completed)return;const capacity=SERVICES[state.service].capacity;if(slotExpired(state.date,state.time)||existingCount(state.date,state.time,state.service)+state.people>capacity){toast(lang==='ko'?'선택한 시간의 예약 가능 여부를 다시 확인해 주세요.':'Please choose an available time.');state.step=1;renderBooking();return;}if(state.holdUntil&&state.holdUntil<Date.now()){toast(lang==='ko'?'HOLD 시간이 만료되었습니다.':'Hold expired.');state.step=1;state.holdUntil=null;renderBooking();return}const s=SERVICES[state.service],pl=s.plans.find(x=>x.id===state.plan),code='MS'+new Date().toISOString().slice(2,10).replaceAll('-','')+Math.random().toString(36).slice(2,6).toUpperCase();const b={id:globalThis.crypto?.randomUUID?.()||String(Date.now()),code,service:s.id,serviceName:tObj(s.title),plan:pl.id,planName:tObj(pl.name),date:state.date,time:state.time,people:state.people,name:state.guest.name,phone:state.guest.phone,email:state.guest.email,country:state.guest.country||'KR',memo:state.guest.memo||'',amount:pl.price==null?null:pl.price*state.people,status:s.payment?'confirmed':'requested',createdAt:new Date().toISOString(),utm:getUtm()};const arr=getBookings();arr.push(b);try{localStorage.setItem('mediscent_bookings_v2',JSON.stringify(arr));}catch{toast(lang==='ko'?'저장할 수 없습니다. 브라우저 저장 설정을 확인해 주세요.':'Storage unavailable. Check your browser settings.');return;}state.completed=b;showDone(b)}
@@ -246,6 +251,8 @@ let TOKEN = LSget('mediscent_tok') || '';
 let AVAIL = {}, ROWS = [], PAYSEL = 'card', adminFilter2 = 'all', statusFilter = 'all';
 
 const online = () => !!(BE.supabaseUrl && BE.supabaseKey);
+/* 온라인 결제 사용 가능 여부 — PortOne 키가 모두 준비돼야 true. false면 현장결제 신청으로 받는다 */
+window.payLive = () => online() && !!BE.storeId && !!(BE.chCard || BE.chEasy || BE.chGlobal) && typeof PortOne !== 'undefined';
 const anonH  = () => ({ apikey: BE.supabaseKey, Authorization: 'Bearer ' + BE.supabaseKey, 'Content-Type': 'application/json' });
 const authH  = () => ({ apikey: BE.supabaseKey, Authorization: 'Bearer ' + (TOKEN || BE.supabaseKey), 'Content-Type': 'application/json', Prefer: 'return=representation' });
 const T = (ko, en) => (lang === 'ko' ? ko : en);
@@ -303,7 +310,7 @@ window.confirmPane = (function (orig) {
   return function () {
     let h = orig();
     const s = SERVICES[state.service], pl = s.plans.find(x => x.id === state.plan);
-    if (s.payment && pl && pl.price != null) h += payHTML();
+    if (s.payment && pl && pl.price != null && payLive()) h += payHTML();
     return h;
   };
 })(confirmPane);
@@ -312,8 +319,7 @@ window.confirmPane = (function (orig) {
 async function payPortOne(res, guest) {
   const ch = PAYSEL === 'global' ? BE.chGlobal : PAYSEL === 'easy' ? BE.chEasy : BE.chCard;
   if (!BE.storeId || !ch || typeof PortOne === 'undefined') {
-    await new Promise(r => setTimeout(r, 700));                 // PG 키 미등록 → 테스트 통과
-    return { ok: true, demo: true, paymentId: 'test-' + res.code };
+    return { ok: false, message: T('온라인 결제가 아직 준비되지 않았습니다. 현장 결제로 예약해 주세요.', 'Online payment is not available yet.') };
   }
   const paymentId = res.code + '-' + Date.now().toString(36);
   const out = await PortOne.requestPayment({
@@ -371,6 +377,9 @@ window.completeBooking = async function () {
     state.step = 1; state.holdUntil = null; renderBooking(); return;
   }
 
+  /* 유료 프로그램인데 온라인 결제가 아직 없으면 현장결제 신청으로 받는다 */
+  const onsite = !!(s.payment && pl.price != null && !payLive());
+
   /* 키 미설정 → 기존 로컬 저장 */
   if (!online()) {
     const code = 'MS' + new Date().toISOString().slice(2, 10).replaceAll('-', '') + Math.random().toString(36).slice(2, 6).toUpperCase();
@@ -378,7 +387,8 @@ window.completeBooking = async function () {
       date: state.date, time: state.time, people: state.people, name: state.guest.name, phone: state.guest.phone,
       email: state.guest.email, country: state.guest.country || 'KR', memo: state.guest.memo || '',
       amount: pl.price == null ? null : pl.price * state.people,
-      status: s.payment && pl.price != null ? 'confirmed' : 'requested',
+      status: s.payment && pl.price != null && !onsite ? 'confirmed' : 'requested',
+      pay_method: onsite ? 'onsite' : (pl.price == null ? 'none' : PAYSEL),
       createdAt: new Date().toISOString(), utm: getUtm(), local: true };
     const arr = getLocal(); arr.push(b); setLocal(arr);
     state.completed = b; showDone(b); return;
@@ -390,9 +400,17 @@ window.completeBooking = async function () {
       p_service: s.id, p_plan: pl.id, p_date: state.date, p_time: state.time, p_people: state.people,
       p_name: state.guest.name, p_phone: state.guest.phone, p_email: state.guest.email,
       p_country: state.guest.country || 'KR', p_memo: state.guest.memo || '',
-      p_lang: lang, p_pay_method: PAYSEL, p_utm: getUtm() || {}
+      p_lang: lang, p_pay_method: onsite ? 'onsite' : PAYSEL, p_utm: getUtm() || {}
     });
     let status = res.status;
+
+    if (onsite && status === 'pending') {
+      /* 서버가 아직 현장결제 패치(1d)를 받지 않은 경우 — 좌석을 풀고 안내 */
+      await rpc('ms_release', { p_code: res.code }).catch(() => {});
+      refreshAvail();
+      toast(T('예약 서버 설정이 필요합니다. 잠시 후 다시 시도해 주세요.', 'The booking server needs an update. Please try again shortly.'));
+      return;
+    }
 
     if (status === 'pending') {
       savePending(res);
@@ -414,7 +432,8 @@ window.completeBooking = async function () {
     const b = { id: res.code, code: res.code, service: s.id, serviceName: tObj(s.title),
       plan: pl.id, planName: tObj(pl.name), date: state.date, time: state.time, people: state.people,
       name: state.guest.name, phone: state.guest.phone, email: state.guest.email,
-      amount: res.amount, status, createdAt: new Date().toISOString() };
+      amount: res.amount, status, pay_method: onsite ? 'onsite' : (res.amount == null ? 'none' : PAYSEL),
+      createdAt: new Date().toISOString() };
     state.completed = b; showDone(b); refreshAvail();
     if (status === 'requested') notifyGuest(res.code, 'requested');
   } catch (e) {
@@ -435,11 +454,14 @@ const stLabel = st => { const v = STATUS_LABEL[st] || [st, st]; return lang === 
 
 window.showDone = function (b) {
   clearInterval(holdTimer);
-  const head = b.status === 'confirmed' ? T('예약이 확정되었습니다', 'Your booking is confirmed')
+  const onsiteDone = b.pay_method === 'onsite';
+  const head = onsiteDone ? T('예약이 접수되었습니다', 'Your seat is reserved')
+            : b.status === 'confirmed' ? T('예약이 확정되었습니다', 'Your booking is confirmed')
             : b.status === 'requested' ? T('신청이 접수되었습니다', 'Your request has been received')
             : b.status === 'paying'    ? T('결제를 확인하고 있습니다', 'We are verifying your payment')
             : T('예약이 접수되었습니다', 'Your booking has been received');
-  const sub = b.status === 'confirmed' ? T('확인 메일을 보내드렸습니다. 방문 시 예약번호를 보여주세요.', 'A confirmation email is on its way. Show this code when you arrive.')
+  const sub = onsiteDone ? T('결제는 방문하시는 날 매장에서 해주세요. 방문 시 아래 예약번호를 보여주시면 됩니다.', 'Please pay at the studio on the day. Show this code when you arrive.')
+            : b.status === 'confirmed' ? T('확인 메일을 보내드렸습니다. 방문 시 예약번호를 보여주세요.', 'A confirmation email is on its way. Show this code when you arrive.')
             : b.status === 'requested' ? T('담당자 확인 후 일정과 안내를 이메일로 보내드립니다.', 'Our team will email you the schedule and details shortly.')
             : b.status === 'paying'    ? T('결제 승인 확인에 최대 1~2분이 걸릴 수 있습니다. 확정되면 메일로 알려드립니다.', 'Final verification can take a minute or two. We will email you once it is confirmed.')
             : T('예약 상태를 확인해 주세요.', 'Please check your booking status.');
@@ -450,7 +472,7 @@ window.showDone = function (b) {
     <dt>${T('장소', 'Where')}</dt><dd>${T('인사동 쌈지길 2층 SHIFTI', 'SHIFTI, Ssamziegil 2F')}</dd>
     <dt>${T('인원', 'Guests')}</dt><dd>${b.people}</dd>
     <dt>${T('예약자', 'Guest')}</dt><dd>${esc(b.name)}</dd>
-    <dt>${T('금액', 'Amount')}</dt><dd>${b.amount == null ? T('가격 협의', 'On request') : money(b.amount)}</dd>
+    <dt>${onsiteDone ? T('현장 결제 금액', 'Pay at studio') : T('금액', 'Amount')}</dt><dd>${b.amount == null ? T('가격 협의', 'On request') : money(b.amount)}</dd>
     <dt>${T('상태', 'Status')}</dt><dd>${stLabel(b.status)}</dd></dl></div>
     <div class="done-actions"><button class="btn primary" onclick="downloadICS('${b.id}')">${T('캘린더 추가', 'Add to calendar')}</button>
     <button class="btn soft" onclick="goHome()">${T('홈으로', 'Home')}</button></div></div>`;
@@ -684,7 +706,7 @@ window.renderAdmin = function () {
     <td data-l="${T('예약자','GUEST')}"><span class="v">${esc(b.name)}<br><small>${esc(b.phone)}</small><br><small>${esc(b.email || '')}</small></span></td>
     <td data-l="${T('인원','PAX')}"><span class="v">${b.people}</span></td>
     <td data-l="${T('금액','AMOUNT')}"><span class="v">${b.amount == null ? '—' : money(b.amount)}${b.paid_amount != null && b.paid_amount !== b.amount ? '<br><small style="color:#9e5f53">PAID ' + money(b.paid_amount) + '</small>' : ''}${b.refund_amount ? '<br><small style="color:#9e5f53">REFUND -' + money(b.refund_amount) + '</small>' : ''}</span></td>
-    <td data-l="${T('결제','PAY')}"><span class="v"><small>${esc(b.pay_method || '—')}</small></span></td>
+    <td data-l="${T('결제','PAY')}"><span class="v"><small>${({card:T('카드','Card'),easy:T('간편결제','Easy pay'),global:T('해외카드','Intl card'),onsite:T('현장결제','On site'),none:'—'})[b.pay_method] || esc(b.pay_method || '—')}</small></span></td>
     <td data-l="${T('상태','STATUS')}"><span class="v"><span class="status ${b.status}">${stLabel(b.status)}</span></span></td>
     <td data-l=""><div class="tact">
       ${(b.status !== 'confirmed' && b.status !== 'refunded') ? `<button onclick="setStatus('${b.code}','confirmed')">${T('확정', 'Confirm')}</button>` : ''}
@@ -952,6 +974,16 @@ const LEGAL = {
 <h4>제8조 (지식재산권 및 촬영)</h4>
 <p>프로그램에서 제공되는 레시피·교육 자료의 권리는 회사에 있습니다. 회사가 홍보 목적으로 촬영을 진행하는 경우 사전에 동의를 구하며, 거부하실 수 있습니다.</p>
 
+<h4>제8조의2 (후기)</h4>
+<ul>
+<li>후기는 서비스를 실제로 이용한(회사가 이용 완료로 처리한) 예약에 한해, 예약 1건당 1회 작성할 수 있습니다.</li>
+<li>작성된 후기는 회사의 확인을 거쳐 예약 사이트에 게시되며, 작성자 이름은 일부를 가려 표시합니다.</li>
+<li>욕설·비방, 타인의 개인정보, 광고·홍보, 사실과 다른 내용이 포함된 후기는 게시하지 않거나 삭제할 수 있습니다. 회사는 불만이나 낮은 별점을 이유로 후기를 비공개 처리하지 않습니다.</li>
+<li>후기의 저작권은 작성자에게 있으며, 회사는 이를 예약 사이트에 게시할 수 있습니다. 예약 사이트 밖(SNS·광고 등)에 활용할 때는 작성자에게 별도로 동의를 구합니다.</li>
+<li>회사가 할인·사은품 등 혜택을 제공하고 받은 후기에는 "혜택 제공"을 표시합니다.</li>
+<li>작성자는 언제든지 ${BIZ.email} 로 후기 수정 또는 삭제를 요청할 수 있습니다.</li>
+</ul>
+
 <h4>제9조 (면책)</h4>
 <p>회사는 이용자의 고의·과실, 사전 미고지 건강 상태, 천재지변 등 회사의 합리적 통제를 벗어난 사유로 발생한 손해에 대해 책임을 지지 않습니다.</p>
 
@@ -973,6 +1005,7 @@ const LEGAL = {
 <tr><td>예약 시 (선택)</td><td>국가/지역, 요청사항, 마케팅 수신 동의 여부</td></tr>
 <tr><td>결제 시</td><td>결제 승인 정보(결제수단·승인번호·금액). <strong>회사는 카드번호 등 결제수단 정보를 저장하지 않으며</strong> 결제대행사가 처리합니다.</td></tr>
 <tr><td>EEG 향기 세션 참여 시 (별도 동의)</td><td>세션 중 측정한 뇌파(EEG) 신호 데이터. 예약 정보와 분리된 영역에 별도 식별키로 보관하며, 이름·연락처와 함께 저장하지 않습니다.</td></tr>
+<tr><td>후기 작성 시 (선택)</td><td>별점, 후기 내용, 사진. 공개 화면에는 이름 첫 글자만 표시하며(예: 김**), 사진은 올릴 때 위치 정보(EXIF)를 지웁니다.</td></tr>
 <tr><td>자동 생성</td><td>접속 경로(UTM) 정보</td></tr>
 </table>
 <p>개인정보는 이용자가 예약 화면에 직접 입력하는 방식으로만 수집합니다.</p>
@@ -984,6 +1017,7 @@ const LEGAL = {
 <li>예약 안내·변경·취소 통지 발송(이메일, 알림톡/문자)</li>
 <li>고객 문의 응대 및 분쟁 처리</li>
 <li>(EEG 향기 세션 참여자에 한함) 세션 진행 및 세션 리포트 제공</li>
+<li>(작성자에 한함) 후기 게시, 이용 완료 다음 날 후기 작성 요청 안내 발송</li>
 <li>(동의한 경우에 한함) 신규 프로그램 및 소식 안내</li>
 </ul>
 
@@ -995,6 +1029,7 @@ const LEGAL = {
 <tr><td>대금결제 및 재화 공급에 관한 기록</td><td>5년</td><td>전자상거래법</td></tr>
 <tr><td>소비자 불만 또는 분쟁처리에 관한 기록</td><td>3년</td><td>전자상거래법</td></tr>
 <tr><td>마케팅 수신 동의 기록</td><td>동의 철회 시까지</td><td>정보통신망법</td></tr>
+<tr><td>후기 및 후기 사진</td><td>게시 중단 또는 삭제 요청 시까지</td><td>이용자 동의</td></tr>
 <tr><td>EEG 측정 데이터</td><td>세션 리포트 제공 목적 달성 시 또는 동의 철회 시 즉시 파기</td><td>이용자 동의</td></tr>
 </table>
 
@@ -1005,7 +1040,7 @@ const LEGAL = {
 <table>
 <tr><th>수탁자</th><th>위탁 업무</th><th>보관 국가</th></tr>
 <tr><td>㈜포트원 및 각 결제대행사(PG)</td><td>결제 및 환불 처리</td><td>대한민국</td></tr>
-<tr><td>Supabase Inc.</td><td>예약 데이터 보관</td><td>대한민국 리전(서울)</td></tr>
+<tr><td>Supabase Inc.</td><td>예약 데이터 및 후기 사진 보관</td><td>대한민국 리전(서울)</td></tr>
 <tr><td>GitHub, Inc.</td><td>웹사이트 호스팅</td><td>미국</td></tr>
 <tr><td>Resend, Inc.</td><td>예약 안내 이메일 발송</td><td>미국</td></tr>
 <tr><td>㈜솔라피</td><td>알림톡·문자 발송</td><td>대한민국</td></tr>
@@ -1164,6 +1199,534 @@ Object.assign(I18N, {
   'loc.subway' : {ko:'안국역 6번 출구 도보 5분', en:'Anguk Stn. Exit 6 · 5 min'}
 });
 setLang(lang);
+</script>
+
+<style id="ms-reviews-style">
+.reviews-sec{padding:6px 0 70px}
+.reviews-sec.hidden{display:none}
+.rv-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:22px;flex-wrap:wrap}
+.rv-head h2{margin:8px 0 0;font-weight:400;font-size:30px;letter-spacing:-.03em;color:var(--deep)}
+.rv-score{display:flex;align-items:center;gap:14px}
+.rv-score b{font-size:40px;font-weight:500;letter-spacing:-.04em;color:var(--deep);line-height:1}
+.rv-score small{display:block;font-size:12px;color:var(--cel);margin-top:4px}
+.rv-stars{position:relative;display:inline-block;font-size:17px;letter-spacing:2px;color:#d8d2c2;line-height:1}
+.rv-stars::before{content:"★★★★★"}
+.rv-stars i{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:var(--gold);font-style:normal}
+.rv-stars i::before{content:"★★★★★"}
+.rv-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.rv-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:12.5px;color:var(--deep)}
+.rv-chip.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+.rv-tools .grow{flex:1}
+.rv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.rv-card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px 20px 16px;display:flex;flex-direction:column;gap:10px}
+.rv-card .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.rv-card .rv-stars{font-size:14px}
+.rv-card h4{margin:0;font-size:15px;font-weight:600;color:var(--deep);letter-spacing:-.02em}
+.rv-card p{margin:0;font-size:13.5px;line-height:1.75;color:#44534d;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.rv-card.open p{-webkit-line-clamp:unset;display:block}
+.rv-card .more{align-self:flex-start;background:none;border:0;padding:0;font-size:12px;color:var(--cel);text-decoration:underline;text-underline-offset:3px}
+.rv-card .ph{display:flex;gap:6px}
+.rv-card .ph button{border:0;padding:0;background:none;border-radius:4px;overflow:hidden;width:64px;height:64px}
+.rv-card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.rv-card .meta{margin-top:auto;padding-top:10px;border-top:1px dashed var(--line);font-size:11.5px;color:var(--cel)}
+.rv-badge{font-size:10.5px;border:1px solid #d9c8a4;color:#8a6a24;border-radius:3px;padding:2px 6px;white-space:nowrap}
+.rv-more{display:flex;justify-content:center;margin-top:18px}
+@media (max-width:900px){.rv-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.rv-grid{grid-template-columns:1fr}.rv-head h2{font-size:24px}.rv-score b{font-size:34px}}
+
+dialog#review{border:0;border-radius:16px;padding:0;width:min(520px,calc(100% - 24px));max-height:88vh;box-shadow:var(--shadow);color:var(--deep)}
+dialog#review::backdrop{background:rgba(20,31,27,.45)}
+#review .rv-top{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--line);padding:18px 22px;display:flex;align-items:center;gap:10px}
+#review .rv-top h3{margin:0;flex:1;font-size:17px;font-weight:600}
+#review .rv-body{padding:20px 22px 24px;overflow-y:auto}
+#review label.f{display:block;font-size:12.5px;font-weight:600;margin:14px 0 6px}
+#review label.f small{font-weight:400;color:var(--cel)}
+#review input[type=text],#review input[type=email],#review textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:12px 13px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+#review textarea{min-height:130px;resize:vertical;line-height:1.6}
+#review .who{background:var(--mist);border-radius:8px;padding:12px 14px;font-size:13px}
+#review .who b{display:block;font-size:14.5px;margin-bottom:2px}
+#review .rate{display:flex;gap:4px;margin-top:4px}
+#review .rate button{border:0;background:none;font-size:34px;line-height:1;color:#d8d2c2;padding:2px;min-width:44px;min-height:44px}
+#review .rate button.on{color:var(--gold)}
+#review .count{text-align:right;font-size:11.5px;color:var(--cel);margin-top:4px}
+#review .phs{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+#review .phs .th{position:relative;width:78px;height:78px;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+#review .phs .th img{width:100%;height:100%;object-fit:cover}
+#review .phs .th button{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(20,31,27,.7);color:#fff;font-size:13px;line-height:24px;padding:0}
+#review .phs label.add{width:78px;height:78px;border:1px dashed var(--cel);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11.5px;color:var(--cel);cursor:pointer;gap:2px}
+#review .phs label.add span{font-size:22px;line-height:1}
+#review .agree{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;line-height:1.6;margin-top:16px;color:#44534d}
+#review .agree input{margin-top:3px;width:17px;height:17px;flex:0 0 auto}
+#review .err{color:var(--danger);font-size:12.5px;margin-top:10px;min-height:1em}
+#review .actions{display:flex;gap:8px;margin-top:18px}
+#review .actions .btn{flex:1}
+#review .thanks{text-align:center;padding:20px 0 6px}
+#review .thanks .seal{width:64px;height:64px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);display:grid;place-items:center;font-size:26px;margin:0 auto 16px}
+#review .thanks h4{margin:0 0 8px;font-size:19px;font-weight:600}
+#review .thanks p{margin:0;font-size:13.5px;color:#55625a;line-height:1.7}
+dialog#rvPhoto{border:0;padding:0;background:transparent;max-width:92vw;max-height:90vh}
+dialog#rvPhoto::backdrop{background:rgba(10,15,13,.8)}
+dialog#rvPhoto img{max-width:92vw;max-height:86vh;display:block;border-radius:6px}
+
+.rv-admin{border-top:1px solid var(--line);padding:22px}
+.rv-admin .hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.rv-admin .hd h3{margin:0;font-size:17px;font-weight:600;color:var(--deep)}
+.rv-admin .hd .cnt{font-size:11.5px;background:rgba(198,166,109,.2);color:#8a6a24;border-radius:999px;padding:3px 9px}
+.rv-admin .hd .grow{flex:1}
+.rv-admin .list{display:grid;gap:10px}
+.rv-admin .item{border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:#fff;display:grid;gap:8px}
+.rv-admin .item .l1{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--cel)}
+.rv-admin .item .l1 b{color:var(--deep);font-size:13px}
+.rv-admin .item p{margin:0;font-size:13.5px;line-height:1.7;white-space:pre-line;color:#33413b}
+.rv-admin .item .ph{display:flex;gap:6px}
+.rv-admin .item .ph img{width:56px;height:56px;object-fit:cover;border-radius:4px;border:1px solid var(--line)}
+.rv-admin .st{font-size:11px;border-radius:999px;padding:3px 9px}
+.rv-admin .st.pending{background:rgba(198,166,109,.2);color:#8a6a24}
+.rv-admin .st.approved{background:rgba(88,114,94,.16);color:#3f5a45}
+.rv-admin .st.rejected{background:rgba(158,95,83,.16);color:#8d4c3f}
+.rv-admin .acts{display:flex;gap:6px;flex-wrap:wrap}
+.rv-admin .acts button{border:1px solid var(--line);background:#fff;border-radius:999px;font-size:11.5px;padding:6px 12px;color:var(--deep);min-height:34px}
+.rv-admin .acts button:hover{background:var(--deep);color:#fff}
+.rv-admin .empty{padding:26px;text-align:center;color:var(--cel);font-size:13px}
+</style>
+
+<dialog id="review" aria-labelledby="rvTitle">
+  <div class="rv-top"><h3 id="rvTitle">후기 남기기</h3><button class="pill" type="button" onclick="closeReview()">닫기</button></div>
+  <div class="rv-body" id="rvBody"></div>
+</dialog>
+<dialog id="rvPhoto" onclick="this.close()"><img id="rvPhotoImg" alt=""></dialog>
+
+<script>
+/* =====================================================================
+   후기 — 완료된 예약만 작성 · 스태프 승인 후 공개 · 이름 가림
+   ===================================================================== */
+Object.assign(I18N, { 'rv.title': {ko:'다녀가신 분들의 이야기', en:'What our guests say'} });
+const RV = { list: [], filter: 'all', shown: 6, check: null, photos: [], rating: 0, admin: null, adminFilter: 'pending' };
+const rvGet = () => { try { return JSON.parse(LSget('mediscent_reviews') || '[]'); } catch (e) { return []; } };
+const rvSet = a => LSset('mediscent_reviews', JSON.stringify(a));
+const rvPhotoUrl = p => /^(data:|https?:)/.test(p) ? p
+  : BE.supabaseUrl + '/storage/v1/object/public/review-photos/' + p.split('/').map(encodeURIComponent).join('/');
+const rvStars = v => `<span class="rv-stars" role="img" aria-label="${T('별점 5점 중', 'Rated')} ${(+v).toFixed(1)}${T('점', ' of 5')}"><i style="width:${Math.max(0, Math.min(5, v)) / 5 * 100}%"></i></span>`;
+const rvMask = n => { n = String(n || '').trim(); return n ? n[0] + '**' : T('고객', 'Guest'); };
+
+/* ── 공개 후기 불러오기 ──────────────────────────────────── */
+async function loadReviews() {
+  try {
+    if (online()) {
+      const r = await fetch(BE.supabaseUrl + '/rest/v1/v_ms_reviews_public?select=*&order=approved_at.desc&limit=200', { headers: anonH() });
+      RV.list = r.ok ? await r.json() : [];
+    } else {
+      RV.list = rvGet().filter(x => x.status === 'approved')
+        .map(x => Object.assign({}, x, { visit_month: (x.visit_date || '').slice(0, 7).replace('-', '.') }))
+        .sort((a, b) => String(b.approved_at).localeCompare(String(a.approved_at)));
+    }
+  } catch (e) { RV.list = []; }
+  renderReviews();
+}
+
+function renderReviews() {
+  const sec = qs('#reviews'); if (!sec) return;
+  const all = RV.list;
+  sec.classList.toggle('hidden', all.length === 0);           // 후기가 없으면 섹션을 숨긴다
+  if (!all.length) return;
+  const avg = all.reduce((n, x) => n + (+x.rating || 0), 0) / all.length;
+  const nP = all.filter(x => x.service === 'perfume').length, nE = all.filter(x => x.service === 'eeg').length;
+  const list = RV.filter === 'all' ? all : all.filter(x => x.service === RV.filter);
+  const shown = list.slice(0, RV.shown);
+  qs('#rvScore').innerHTML = `<b>${avg.toFixed(1)}</b><div>${rvStars(avg)}<small>${T('후기', 'Reviews')} ${all.length}${T('개', '')}</small></div>`;
+  qs('#rvTools').innerHTML =
+    `<button class="rv-chip ${RV.filter === 'all' ? 'on' : ''}" onclick="rvFilter('all')">${T('전체', 'All')} ${all.length}</button>` +
+    (nP ? `<button class="rv-chip ${RV.filter === 'perfume' ? 'on' : ''}" onclick="rvFilter('perfume')">${T('향수 클래스', 'Perfume Class')} ${nP}</button>` : '') +
+    (nE ? `<button class="rv-chip ${RV.filter === 'eeg' ? 'on' : ''}" onclick="rvFilter('eeg')">${T('EEG 향기 세션', 'EEG Scent Session')} ${nE}</button>` : '') +
+    `<span class="grow"></span><button class="btn soft" onclick="openReview()">${T('후기 남기기', 'Write a review')}</button>`;
+  qs('#rvGrid').innerHTML = shown.map((x, i) => `
+    <article class="rv-card" id="rv-${i}">
+      <div class="top">${rvStars(+x.rating)}${x.incentive ? `<span class="rv-badge">${T('혜택 제공', 'Incentivised')}</span>` : ''}</div>
+      ${x.title ? `<h4>${esc(x.title)}</h4>` : ''}
+      <p>${esc(x.body)}</p>
+      ${String(x.body || '').length > 140 ? `<button class="more" onclick="this.closest('.rv-card').classList.toggle('open');this.textContent=this.closest('.rv-card').classList.contains('open')?'${T('접기', 'Less')}':'${T('더 보기', 'More')}'">${T('더 보기', 'More')}</button>` : ''}
+      ${(x.photos || []).length ? `<div class="ph">${x.photos.map(p => `<button onclick="rvZoom('${esc(rvPhotoUrl(p))}')" aria-label="${T('사진 크게 보기', 'Open photo')}"><img loading="lazy" src="${esc(rvPhotoUrl(p))}" alt=""></button>`).join('')}</div>` : ''}
+      <div class="meta">${esc(planName(x.service, x.plan) || svcName(x.service))} · ${esc(x.visit_month || '')} · ${esc(x.display_name || T('고객', 'Guest'))}</div>
+    </article>`).join('');
+  qs('#rvMore').innerHTML = list.length > RV.shown ? `<button class="btn soft" onclick="RV.shown+=6;renderReviews()">${T('후기 더 보기', 'More reviews')}</button>` : '';
+}
+window.rvFilter = f => { RV.filter = f; RV.shown = 6; renderReviews(); };
+window.rvZoom = src => { qs('#rvPhotoImg').src = src; qs('#rvPhoto').showModal(); };
+
+/* ── 작성 대화상자 ──────────────────────────────────────── */
+window.openReview = function (code) {
+  RV.check = null; RV.photos = []; RV.rating = 0;
+  qs('#rvTitle').textContent = T('후기 남기기', 'Write a review');
+  qs('#rvBody').innerHTML = `
+    <p style="margin:0 0 4px;font-size:13.5px;color:#55625a;line-height:1.7">${T('클래스나 세션을 마친 분만 후기를 남길 수 있어요. 예약번호와 예약하신 이메일(또는 전화번호 뒤 4자리)을 입력해 주세요.', 'Reviews are for guests who have completed a visit. Enter your booking code and the email (or last 4 digits of the phone) you booked with.')}</p>
+    <label class="f" for="rvCode">${T('예약번호', 'Booking code')}</label>
+    <input type="text" id="rvCode" placeholder="MS…" autocomplete="off" value="${esc(code || '')}">
+    <label class="f" for="rvContact">${T('이메일 또는 전화번호 뒤 4자리', 'Email or last 4 digits of phone')}</label>
+    <input type="text" id="rvContact" autocomplete="off" placeholder="name@email.com" onkeydown="if(event.key==='Enter')rvCheck()">
+    <div class="err" id="rvErr"></div>
+    <div class="actions"><button class="btn primary" id="rvNext" onclick="rvCheck()">${T('확인', 'Continue')}</button></div>`;
+  const d = qs('#review'); if (!d.open) d.showModal();
+  setTimeout(() => qs(code ? '#rvContact' : '#rvCode').focus(), 50);
+};
+window.closeReview = () => qs('#review').close();
+
+function rvErrText(e) {
+  const m = String(e && e.message || e);
+  if (m.includes('REVIEW_NOT_DONE')) return T('방문을 마친 뒤에 후기를 남길 수 있어요. 방문하신 날 이후에 다시 시도해 주세요.', 'You can leave a review after your visit.');
+  if (m.includes('REVIEW_ALREADY'))  return T('이 예약으로는 이미 후기를 남기셨어요. 감사합니다!', 'You have already reviewed this booking. Thank you!');
+  if (m.includes('REVIEW_NOT_FOUND'))return T('예약번호와 연락처가 일치하지 않습니다.', 'Booking code and contact do not match.');
+  if (m.includes('REVIEW_SHORT'))    return T('후기를 10자 이상 적어 주세요.', 'Please write at least 10 characters.');
+  if (m.includes('REVIEW_RATING'))   return T('별점을 선택해 주세요.', 'Please choose a rating.');
+  if (m.includes('REVIEW_PHOTOS'))   return T('사진은 최대 3장까지 올릴 수 있어요.', 'Up to 3 photos.');
+  return errMsg(e);
+}
+
+window.rvCheck = async function () {
+  const code = qs('#rvCode').value.trim(), c = qs('#rvContact').value.trim(), err = qs('#rvErr');
+  if (!code || !c) { err.textContent = T('예약번호와 연락처를 모두 입력해 주세요.', 'Enter both fields.'); return; }
+  err.textContent = ''; qs('#rvNext').disabled = true;
+  try {
+    if (online()) {
+      RV.check = Object.assign(await rpc('ms_review_check', { p_code: code, p_contact: c }), { contact: c });
+    } else {
+      const b = getLocal().find(x => x.code.toLowerCase() === code.toLowerCase());
+      const digits = c.replace(/[^0-9]/g, '');
+      const ok = b && (String(b.email).toLowerCase() === c.toLowerCase() || (digits.length >= 4 && String(b.phone).replace(/[^0-9]/g, '').slice(-4) === digits.slice(-4)));
+      if (!ok) throw new Error('REVIEW_NOT_FOUND');
+      if (b.status !== 'done') throw new Error('REVIEW_NOT_DONE');
+      if (rvGet().some(x => x.code === b.code)) throw new Error('REVIEW_ALREADY');
+      RV.check = { code: b.code, service: b.service, plan: b.plan, date: b.date, name: rvMask(b.name), contact: c };
+    }
+    rvForm();
+  } catch (e) { err.textContent = rvErrText(e); }
+  finally { const n = qs('#rvNext'); if (n) n.disabled = false; }
+};
+
+function rvForm() {
+  const k = RV.check;
+  qs('#rvBody').innerHTML = `
+    <div class="who"><b>${esc(svcName(k.service))} · ${esc(planName(k.service, k.plan))}</b>${esc(k.date)} · ${esc(k.name)} ${T('님', '')}</div>
+    <label class="f">${T('별점', 'Rating')}</label>
+    <div class="rate" role="radiogroup" aria-label="${T('별점', 'Rating')}">
+      ${[1, 2, 3, 4, 5].map(n => `<button type="button" role="radio" aria-checked="false" aria-label="${n}${T('점', ' stars')}" data-n="${n}" onclick="rvRate(${n})">★</button>`).join('')}
+    </div>
+    <label class="f" for="rvT">${T('한 줄 제목', 'Title')} <small>(${T('선택', 'optional')})</small></label>
+    <input type="text" id="rvT" maxlength="60" placeholder="${T('예) 향을 고르는 시간이 즐거웠어요', 'e.g. Loved choosing the notes')}">
+    <label class="f" for="rvB">${T('후기', 'Your review')}</label>
+    <textarea id="rvB" maxlength="1000" placeholder="${T('어떤 향을 만들었는지, 클래스 분위기는 어땠는지 편하게 적어 주세요.', 'What did you make, and how did it feel?')}" oninput="qs('#rvCnt').textContent=this.value.length+' / 1000'"></textarea>
+    <div class="count" id="rvCnt">0 / 1000</div>
+    <label class="f">${T('사진', 'Photos')} <small>(${T('선택 · 최대 3장', 'optional · up to 3')})</small></label>
+    <div class="phs" id="rvPhs"></div>
+    <label class="agree"><input type="checkbox" id="rvAgree"><span>${T('후기가 예약 페이지에 게시되는 것에 동의합니다. 이름은 일부를 가려서 표시되며, 사진 속 위치 정보는 올릴 때 지워집니다.', 'I agree to my review being published on this page. My name is partly hidden and photo location data is removed on upload.')}</span></label>
+    <div class="err" id="rvErr"></div>
+    <div class="actions"><button class="btn soft" onclick="openReview('${esc(k.code)}')">${T('이전', 'Back')}</button><button class="btn primary" id="rvSend" onclick="rvSubmit()">${T('후기 보내기', 'Submit review')}</button></div>`;
+  rvRenderPhotos();
+}
+window.rvRate = n => {
+  RV.rating = n;
+  qsa('#review .rate button').forEach(b => { const on = +b.dataset.n <= n; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(+b.dataset.n === n)); });
+};
+function rvRenderPhotos() {
+  const box = qs('#rvPhs'); if (!box) return;
+  box.innerHTML = RV.photos.map((p, i) => `<div class="th"><img src="${p.preview}" alt=""><button type="button" aria-label="${T('사진 빼기', 'Remove')}" onclick="RV.photos.splice(${i},1);rvRenderPhotos()">✕</button></div>`).join('') +
+    (RV.photos.length < 3 ? `<label class="add"><span>＋</span>${T('사진 추가', 'Add')}<input type="file" accept="image/*" multiple hidden onchange="rvAddPhotos(this)"></label>` : '');
+}
+
+/* 사진을 1600px JPEG로 줄여서 올린다 — 용량을 줄이고 위치(EXIF) 정보를 지운다 */
+async function rvShrink(file, max) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = url; });
+    const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.82));
+    return { blob, preview: c.toDataURL('image/jpeg', 0.6) };
+  } finally { URL.revokeObjectURL(url); }
+}
+window.rvAddPhotos = async function (input) {
+  const files = [...input.files].slice(0, 3 - RV.photos.length);
+  for (const f of files) {
+    try { RV.photos.push(await rvShrink(f, 1600)); }
+    catch (e) { toast(T('이 사진은 올릴 수 없어요. JPG·PNG 사진을 골라 주세요.', 'This photo could not be read.')); }
+  }
+  rvRenderPhotos();
+};
+
+window.rvSubmit = async function () {
+  const k = RV.check, err = qs('#rvErr');
+  const title = qs('#rvT').value.trim(), body = qs('#rvB').value.trim();
+  if (!RV.rating) { err.textContent = rvErrText('REVIEW_RATING'); return; }
+  if (body.length < 10) { err.textContent = rvErrText('REVIEW_SHORT'); return; }
+  if (!qs('#rvAgree').checked) { err.textContent = T('게시 동의에 체크해 주세요.', 'Please tick the consent box.'); return; }
+  err.textContent = ''; const btn = qs('#rvSend'); btn.disabled = true; btn.textContent = T('보내는 중…', 'Sending…');
+  try {
+    let paths = [];
+    if (online()) {
+      for (const p of RV.photos) {
+        const id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+        const path = `${k.code}/${id}.jpg`;
+        const r = await fetch(`${BE.supabaseUrl}/storage/v1/object/review-photos/${path}`, {
+          method: 'POST', headers: { apikey: BE.supabaseKey, Authorization: 'Bearer ' + BE.supabaseKey, 'Content-Type': 'image/jpeg', 'x-upsert': 'false' },
+          body: p.blob });
+        if (!r.ok) throw new Error(T('사진을 올리지 못했습니다. 사진 없이 다시 시도하거나 다른 사진을 골라 주세요.', 'Photo upload failed.'));
+        paths.push(path);
+      }
+      await rpc('ms_review_submit', { p_code: k.code, p_contact: k.contact, p_rating: RV.rating, p_title: title, p_body: body, p_photos: paths, p_lang: lang });
+    } else {
+      const a = rvGet();
+      a.push({ id: 'rv' + Date.now(), code: k.code, service: k.service, plan: k.plan, visit_date: k.date, rating: RV.rating,
+               title, body, photos: RV.photos.map(p => p.preview), display_name: k.name, incentive: false,
+               status: 'pending', created_at: new Date().toISOString() });
+      rvSet(a);
+    }
+    qs('#rvBody').innerHTML = `<div class="thanks"><div class="seal">✓</div><h4>${T('후기가 접수되었습니다', 'Thank you for your review')}</h4>
+      <p>${T('소중한 후기 감사합니다. 확인을 거쳐 예약 페이지에 게시됩니다.', 'It will appear on this page after a quick check.')}</p>
+      <div class="actions"><button class="btn primary" onclick="closeReview()">${T('닫기', 'Close')}</button></div></div>`;
+    if (RV.admin) loadReviewsAdmin();
+  } catch (e) {
+    err.textContent = rvErrText(e); btn.disabled = false; btn.textContent = T('후기 보내기', 'Submit review');
+  }
+};
+
+/* 예약 확인에서 '이용 완료'면 후기 버튼을 붙인다 */
+window.findBooking = (function (orig) {
+  return async function () {
+    await orig();
+    const out = qs('#lookupResult');
+    if (out && out.textContent.includes(stLabel('done'))) {
+      const code = qs('#lookupCode').value.trim();
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'btn primary'; b.style.marginTop = '12px';
+      b.textContent = T('이 방문 후기 남기기', 'Review this visit');
+      b.onclick = () => { qs('#lookup').close(); openReview(code); };
+      out.appendChild(document.createElement('br')); out.appendChild(b);
+    }
+  };
+})(findBooking);
+
+/* ── 관리자: 후기 승인 ──────────────────────────────────── */
+async function loadReviewsAdmin() {
+  try {
+    if (online() && TOKEN) {
+      const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_reviews?select=*&order=created_at.desc', { headers: authH() });
+      RV.admin = r.ok ? await r.json() : [];
+    } else RV.admin = rvGet().slice().sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+  } catch (e) { RV.admin = []; }
+  renderReviewAdmin();
+}
+function renderReviewAdmin() {
+  const box = qs('#rvAdmin'); if (!box) return;
+  const all = RV.admin || [];
+  const pend = all.filter(x => x.status === 'pending').length;
+  const list = RV.adminFilter === 'all' ? all : all.filter(x => x.status === RV.adminFilter);
+  const stName = { pending: T('승인 대기', 'Pending'), approved: T('게시 중', 'Published'), rejected: T('비공개', 'Hidden') };
+  box.innerHTML = `
+    <div class="hd"><h3>${T('후기 관리', 'Reviews')}</h3>${pend ? `<span class="cnt">${T('승인 대기', 'Pending')} ${pend}</span>` : ''}<span class="grow"></span>
+      ${[['pending', T('대기', 'Pending')], ['approved', T('게시', 'Published')], ['rejected', T('비공개', 'Hidden')], ['all', T('전체', 'All')]]
+        .map(([k, l]) => `<button class="rv-chip ${RV.adminFilter === k ? 'on' : ''}" onclick="RV.adminFilter='${k}';renderReviewAdmin()">${l}</button>`).join('')}</div>
+    <div class="list">${list.length ? list.map(x => `
+      <div class="item">
+        <div class="l1">${rvStars(+x.rating)}<b>${esc(x.title || '')}</b><span class="st ${x.status}">${stName[x.status] || x.status}</span>${x.incentive ? `<span class="rv-badge">${T('혜택 제공', 'Incentivised')}</span>` : ''}</div>
+        <p>${esc(x.body)}</p>
+        ${(x.photos || []).length ? `<div class="ph">${x.photos.map(p => `<img src="${esc(rvPhotoUrl(p))}" alt="" onclick="rvZoom('${esc(rvPhotoUrl(p))}')">`).join('')}</div>` : ''}
+        <div class="l1">${esc(x.code)} · ${esc(svcName(x.service))} · ${esc(planName(x.service, x.plan))} · ${esc(x.visit_date || '')} · ${esc(x.display_name || '')} · ${String(x.created_at || '').slice(0, 10)}</div>
+        <div class="acts">
+          ${x.status !== 'approved' ? `<button onclick="rvSetStatus('${x.id}','approved')">${T('게시', 'Publish')}</button>` : ''}
+          ${x.status !== 'rejected' ? `<button onclick="rvSetStatus('${x.id}','rejected')">${T('비공개', 'Hide')}</button>` : ''}
+          <button onclick="rvToggleIncentive('${x.id}')">${x.incentive ? T('혜택 표시 끄기', 'Remove incentive label') : T('혜택 제공 표시', 'Mark as incentivised')}</button>
+          <button onclick="rvDelete('${x.id}')">${T('삭제', 'Delete')}</button>
+        </div>
+      </div>`).join('') : `<div class="empty">${RV.adminFilter === 'pending' ? T('승인을 기다리는 후기가 없습니다.', 'No reviews waiting.') : T('해당하는 후기가 없습니다.', 'No reviews here.')}</div>`}</div>`;
+}
+async function rvPatch(id, patch) {
+  if (online() && TOKEN) {
+    const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_reviews?id=eq.' + encodeURIComponent(id), { method: 'PATCH', headers: authH(), body: JSON.stringify(patch) });
+    if (!r.ok) throw new Error(await r.text());
+  } else { const a = rvGet(); const x = a.find(v => v.id === id); if (x) Object.assign(x, patch); rvSet(a); }
+}
+window.rvSetStatus = async (id, st) => {
+  try { await rvPatch(id, { status: st, approved_at: st === 'approved' ? new Date().toISOString() : null }); await loadReviewsAdmin(); loadReviews();
+        toast(st === 'approved' ? T('후기를 게시했습니다.', 'Published.') : T('비공개로 바꿨습니다.', 'Hidden.')); }
+  catch (e) { toast(errMsg(e)); }
+};
+window.rvToggleIncentive = async id => {
+  const x = (RV.admin || []).find(v => v.id === id); if (!x) return;
+  try { await rvPatch(id, { incentive: !x.incentive }); await loadReviewsAdmin(); loadReviews(); } catch (e) { toast(errMsg(e)); }
+};
+window.rvDelete = async id => {
+  if (!confirm(T('이 후기를 삭제할까요? 사진도 함께 지워지고 되돌릴 수 없습니다.', 'Delete this review and its photos? This cannot be undone.'))) return;
+  const x = (RV.admin || []).find(v => v.id === id);
+  try {
+    if (online() && TOKEN) {
+      if (x && (x.photos || []).length) {
+        await fetch(BE.supabaseUrl + '/storage/v1/object/review-photos', { method: 'DELETE', headers: authH(), body: JSON.stringify({ prefixes: x.photos }) }).catch(() => {});
+      }
+      const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_reviews?id=eq.' + encodeURIComponent(id), { method: 'DELETE', headers: authH() });
+      if (!r.ok) throw new Error(await r.text());
+    } else rvSet(rvGet().filter(v => v.id !== id));
+    await loadReviewsAdmin(); loadReviews(); toast(T('삭제했습니다.', 'Deleted.'));
+  } catch (e) { toast(errMsg(e)); }
+};
+window.renderAdmin = (function (orig) {
+  return function () {
+    orig.apply(this, arguments);
+    const panel = qs('#adminPanel'); if (!panel || qs('#rvAdmin')) return;
+    const box = document.createElement('div'); box.className = 'rv-admin'; box.id = 'rvAdmin';
+    const cfg = panel.querySelector('.admin-cfg');
+    cfg ? panel.insertBefore(box, cfg) : panel.appendChild(box);
+    RV.admin ? renderReviewAdmin() : loadReviewsAdmin();
+  };
+})(renderAdmin);
+window.refreshAdmin = (function (orig) {
+  return async function () { await orig(); loadReviewsAdmin(); };
+})(refreshAdmin);
+
+/* ── 진입점: 하단 링크 · 메일 링크(?review=코드) ───────────── */
+(function rvBoot() {
+  const links = qs('.bizinfo .links');
+  if (links && !links.querySelector('.rv-link')) {
+    const b = document.createElement('button'); b.className = 'rv-link';
+    b.textContent = T('후기 남기기', 'Write a review'); b.onclick = () => openReview();
+    links.appendChild(b);
+  }
+  loadReviews();
+  const code = new URLSearchParams(location.search).get('review');
+  if (code) setTimeout(() => openReview(code), 400);
+})();
+window.setLang = (function (orig) {
+  return function (l) { orig(l); renderReviews(); const k = qs('.bizinfo .rv-link'); if (k) k.textContent = T('후기 남기기', 'Write a review'); };
+})(setLang);
+</script>
+
+<style id="ms-syscheck-style">
+.sys{border-top:1px solid var(--line);padding:22px;text-align:left}
+.sys *{text-align:left}
+.sys .row .tag{text-align:right!important}
+.sys .hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.sys .hd h3{margin:0;font-size:17px;font-weight:600;color:var(--deep)}
+.sys .hd .grow{flex:1}
+.sys .rows{display:grid;gap:8px}
+.sys .row{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:start;border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#fff}
+.sys .row .ic{font-size:15px;line-height:1.5}
+.sys .row.ok .ic{color:#4f7a58}
+.sys .row.warn .ic{color:#b0862f}
+.sys .row.bad .ic{color:var(--danger)}
+.sys .row b{display:block;font-size:13.5px;color:var(--deep);font-weight:600}
+.sys .row div span{display:block;font-size:12.5px;color:var(--cel);line-height:1.6;margin-top:2px;text-align:left!important;font-weight:400!important}
+.sys .row .tag{font-size:11px;color:var(--cel);white-space:nowrap;padding-top:2px}
+.sys .sum{font-size:12.5px;color:var(--cel);margin-top:12px;line-height:1.7}
+@media (max-width:600px){.sys .row{grid-template-columns:22px 1fr}.sys .row .tag{grid-column:2;padding-top:6px}}
+</style>
+<script>
+/* =====================================================================
+   시스템 점검 — 무엇이 설치됐고 무엇이 남았는지 관리자 화면에서 확인
+   ===================================================================== */
+const SYS = { rows: null, busy: false };
+
+async function sysProbe() {
+  const out = [];
+  const add = (st, name, msg, tag) => out.push({ st, name, msg, tag: tag || '' });
+
+  /* 1. 주소와 보안 연결 */
+  const proto = location.protocol, host = location.hostname;
+  if (proto === 'file:') add('warn', T('사이트 주소', 'Site address'), T('지금은 내 컴퓨터에서 파일로 열어본 상태입니다. 서버에 올린 주소로 접속해야 예약이 저장됩니다.', 'Opened as a local file. Use the published address.'), 'file://');
+  else if (proto === 'https:') add('ok', T('보안 연결(HTTPS)', 'HTTPS'), T('정상입니다.', 'Secure.'), host);
+  else add('bad', T('보안 연결(HTTPS)', 'HTTPS'), T('http로 열려 있습니다. GitHub → Settings → Pages → Enforce HTTPS 를 켜 주세요.', 'Turn on Enforce HTTPS in GitHub Pages settings.'), host);
+
+  /* 2. Supabase 연결 */
+  if (!online()) {
+    add('bad', T('예약 서버(Supabase)', 'Supabase'), T('연동 설정에 Supabase URL과 anon key를 입력해 주세요. 지금은 이 브라우저에만 저장됩니다.', 'Enter your Supabase URL and anon key below.'));
+    SYS.rows = out; return out;
+  }
+  try {
+    const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_settings?select=service,capacity,open_time,close_time', { headers: anonH() });
+    if (!r.ok) throw new Error(r.status + '');
+    const rows = await r.json();
+    const perfume = rows.find(x => x.service === 'perfume') || {};
+    add('ok', T('예약 서버(Supabase)', 'Supabase'), T(`연결됨 · 향수 클래스 정원 ${perfume.capacity ?? '?'}명 · ${perfume.open_time ?? ''}–${perfume.close_time ?? ''}`, 'Connected'), BE.supabaseUrl.replace('https://', '').split('.')[0]);
+  } catch (e) {
+    add('bad', T('예약 서버(Supabase)', 'Supabase'), T('연결되지 않습니다. URL과 anon key, 그리고 설치 SQL 실행 여부를 확인해 주세요.', 'Cannot reach Supabase.'), String(e.message || '').slice(0, 20));
+    SYS.rows = out; return out;
+  }
+
+  /* 3. 설치 SQL 버전 */
+  let ver = null;
+  try { ver = await rpc('ms_version', {}); } catch (e) { ver = null; }
+  if (ver) add('ok', T('예약 기능 설치', 'Database install'), T('최신 설치본이 적용돼 있습니다. 현장결제 신청도 동작합니다.', 'Latest installer applied.'), ver);
+  else add('bad', T('예약 기능 설치', 'Database install'), T('설치 SQL(00_setup_all.sql)을 SQL Editor에서 실행해 주세요. 실행 전에는 현장결제 신청이 저장되지 않습니다.', 'Run 00_setup_all.sql in the SQL Editor.'), T('미설치', 'missing'));
+
+  /* 4. 후기 기능 */
+  try {
+    const r = await fetch(BE.supabaseUrl + '/rest/v1/v_ms_reviews_public?select=id&limit=1', { headers: anonH() });
+    if (!r.ok) throw new Error('missing');
+    add('ok', T('후기 기능', 'Reviews'), T('설치됨 · 완료된 예약만 후기를 쓸 수 있습니다.', 'Installed.'), (RV.admin ? RV.admin.length : 0) + T('건', ''));
+  } catch (e) {
+    add('bad', T('후기 기능', 'Reviews'), T('설치 SQL을 실행하면 함께 설치됩니다.', 'Run the installer SQL.'), T('미설치', 'missing'));
+  }
+
+  /* 5. 결제 */
+  if (payLive()) add('ok', T('온라인 결제(PortOne)', 'Online payment'), T('결제 연결됨 · 손님이 카드로 바로 결제합니다.', 'Connected.'), 'PortOne');
+  else if (BE.storeId || BE.chCard || BE.chEasy || BE.chGlobal)
+    add('warn', T('온라인 결제(PortOne)', 'Online payment'), T('Store ID와 채널키가 모두 입력돼야 켜집니다. 지금은 현장결제 신청으로 받습니다.', 'Store ID and a channel key are both required.'), T('설정 미완료', 'incomplete'));
+  else add('warn', T('온라인 결제(PortOne)', 'Online payment'), T('아직 연결되지 않았습니다. 현재는 "예약 신청 (현장 결제)"로 받고 있으며, 결제 없이 예약이 확정되지는 않습니다.', 'Not connected — bookings are taken as on-site payment.'), T('현장결제 모드', 'on-site'));
+
+  /* 6. 안내 발송 (Edge Function) */
+  try {
+    const r = await fetch(BE.supabaseUrl + '/functions/v1/notify', { method: 'OPTIONS' });
+    if (r.ok) add('ok', T('안내 발송 서버', 'Notification function'), T('배포됨 · 메일과 알림톡을 보낼 수 있습니다.', 'Deployed.'), 'notify');
+    else throw new Error(r.status + '');
+  } catch (e) {
+    add('warn', T('안내 발송 서버', 'Notification function'), T('아직 배포되지 않았습니다. 배포 전에는 확정 메일·알림톡과 환불 버튼이 동작하지 않습니다.', 'Not deployed yet — emails and refunds are unavailable.'), T('미배포', 'not deployed'));
+  }
+
+  /* 7. 최근 발송 기록 */
+  if (TOKEN) {
+    try {
+      const since = new Date(Date.now() - 7 * 86400000).toISOString();
+      const r = await fetch(BE.supabaseUrl + `/rest/v1/ms_notify_log?select=ok,channel&created_at=gte.${since}`, { headers: authH() });
+      const rows = r.ok ? await r.json() : [];
+      const good = rows.filter(x => x.ok).length;
+      if (!rows.length) add('warn', T('최근 7일 발송', 'Sent this week'), T('발송 기록이 없습니다. 예약이 없었거나 발송 설정이 아직입니다.', 'No messages sent yet.'), '0');
+      else add(good ? 'ok' : 'bad', T('최근 7일 발송', 'Sent this week'), T(`성공 ${good}건 / 전체 ${rows.length}건`, `${good} of ${rows.length} succeeded`), rows.length + T('건', ''));
+    } catch (e) { /* 무시 */ }
+  }
+
+  SYS.rows = out; return out;
+}
+
+window.renderSysCheck = function () {
+  const box = qs('#sysCheck'); if (!box) return;
+  const rows = SYS.rows;
+  const icon = { ok: '●', warn: '▲', bad: '✕' };
+  box.innerHTML = `
+    <div class="hd"><h3>${T('시스템 점검', 'System check')}</h3><span class="grow"></span>
+      <button class="pill" onclick="runSysCheck()" ${SYS.busy ? 'disabled' : ''}>${SYS.busy ? T('확인 중…', 'Checking…') : T('다시 점검', 'Re-check')}</button></div>
+    <div class="rows">${!rows ? `<div class="row"><span class="ic">·</span><div><b>${T('점검 중입니다…', 'Checking…')}</b></div></div>`
+      : rows.map(r => `<div class="row ${r.st}"><span class="ic">${icon[r.st]}</span><div><b>${esc(r.name)}</b><span>${esc(r.msg)}</span></div><span class="tag">${esc(r.tag)}</span></div>`).join('')}</div>
+    ${rows ? `<p class="sum">${rows.every(r => r.st === 'ok')
+        ? T('모든 항목이 정상입니다.', 'Everything is in place.')
+        : T('▲ 는 지금 운영에 지장은 없지만 아직 남은 일, ✕ 는 먼저 처리해야 하는 일입니다.', '▲ = optional for now, ✕ = fix first.')}</p>` : ''}`;
+};
+window.runSysCheck = async function () {
+  SYS.busy = true; renderSysCheck();
+  try { await sysProbe(); } catch (e) { SYS.rows = [{ st: 'bad', name: T('점검 실패', 'Check failed'), msg: errMsg(e), tag: '' }]; }
+  SYS.busy = false; renderSysCheck();
+};
+
+/* 관리자 화면에 점검 패널 끼워넣기 */
+window.renderAdmin = (function (orig) {
+  return function () {
+    orig.apply(this, arguments);
+    const panel = qs('#adminPanel'); if (!panel || qs('#sysCheck')) return;
+    const box = document.createElement('div'); box.className = 'sys'; box.id = 'sysCheck';
+    const rv = panel.querySelector('#rvAdmin'), cfg = panel.querySelector('.admin-cfg');
+    panel.insertBefore(box, rv || cfg || null);
+    renderSysCheck();
+    if (!SYS.rows && !SYS.busy) runSysCheck();
+  };
+})(renderAdmin);
 </script>
 
 </body></html>
