@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ko">
 <head>
@@ -658,8 +657,7 @@ window.resendNotify = async function (code, kind) {
                    : row.status === 'requested' ? 'requested' : 'confirmed');
   try {
     const r = await fetch(fnUrl('notify'), { method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json', apikey: BE.supabaseKey },
-                             { Authorization: 'Bearer ' + (TOKEN || BE.supabaseKey) }),
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (TOKEN || BE.supabaseKey) },
       body: JSON.stringify({ code, kind: k }) });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.error || 'failed');
@@ -674,7 +672,7 @@ async function notifyGuest(code, kind) {
   if (!online()) return;
   try {
     await fetch(fnUrl('notify'), { method: 'POST',
-      headers: { 'Content-Type': 'application/json', apikey: BE.supabaseKey, Authorization: 'Bearer ' + BE.supabaseKey },
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + BE.supabaseKey },
       body: JSON.stringify({ code, kind }) });
   } catch (e) { /* 발송 실패가 예약을 막지는 않는다 */ }
 }
