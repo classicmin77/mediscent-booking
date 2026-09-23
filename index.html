@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ko">
 <head>
@@ -436,6 +437,7 @@ window.completeBooking = async function () {
       createdAt: new Date().toISOString() };
     state.completed = b; showDone(b); refreshAvail();
     if (status === 'requested') notifyGuest(res.code, 'requested');
+    else if (status === 'confirmed') notifyGuest(res.code, 'confirmed');   // 웹훅이 아직 없어도 메일은 나간다
   } catch (e) {
     toast(errMsg(e));
     if (String(e.message || '').includes('SOLD_OUT')) { state.step = 1; renderBooking(); }
@@ -553,6 +555,7 @@ window.unlockAdmin = async function () {
     const d = await r.json();
     if (!r.ok || !d.access_token) throw new Error(d.error_description || d.msg || 'login failed');
     TOKEN = d.access_token; LSset('mediscent_tok', TOKEN);
+    if (d.refresh_token) LSset('mediscent_rtok', d.refresh_token);
     await enterAdmin();
   } catch (e) { toast(T('로그인에 실패했습니다. ', 'Login failed. ') + errMsg(e)); }
 };
@@ -562,14 +565,37 @@ async function enterAdmin() {
   await loadRows(); renderAdmin();
 }
 window.logoutAdmin = function () {
-  TOKEN = ''; LSset('mediscent_tok', ''); ROWS = [];
+  TOKEN = ''; LSset('mediscent_tok', ''); LSset('mediscent_rtok', ''); ROWS = [];
   qs('#adminPanel').classList.add('hidden'); qs('#adminGate').classList.remove('hidden');
 };
+/* 토큰이 만료되면 조용히 갱신하고 한 번 더 시도한다 */
+async function refreshToken() {
+  const rt = LSget('mediscent_rtok');
+  if (!rt) return false;
+  try {
+    const r = await fetch(BE.supabaseUrl + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST', headers: { apikey: BE.supabaseKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: rt }) });
+    const d = await r.json();
+    if (!r.ok || !d.access_token) return false;
+    TOKEN = d.access_token; LSset('mediscent_tok', TOKEN);
+    if (d.refresh_token) LSset('mediscent_rtok', d.refresh_token);
+    return true;
+  } catch (e) { return false; }
+}
+async function authFetch(url, init) {
+  let r = await fetch(url, Object.assign({}, init, { headers: authH() }));
+  if ((r.status === 401 || r.status === 403) && await refreshToken()) {
+    r = await fetch(url, Object.assign({}, init, { headers: authH() }));
+  }
+  return r;
+}
+
 async function loadRows() {
   if (!online()) { ROWS = getLocal(); return; }
   try {
-    const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_reservations?select=*&order=date.desc,time.desc', { headers: authH() });
-    if (r.status === 401 || r.status === 403) { logoutAdmin(); toast(T('로그인이 만료되었습니다.', 'Session expired.')); return; }
+    const r = await authFetch(BE.supabaseUrl + '/rest/v1/ms_reservations?select=*&order=date.desc,time.desc');
+    if (r.status === 401 || r.status === 403) { logoutAdmin(); toast(T('로그인이 만료되었습니다. 다시 로그인해 주세요.', 'Session expired — please log in again.')); return; }
     ROWS = await r.json();
   } catch (e) { toast(errMsg(e)); }
 }
@@ -580,15 +606,16 @@ window.setStatus = async function (code, st) {
     ROWS = getLocal(); renderAdmin(); return;
   }
   try {
-    const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_reservations?code=eq.' + encodeURIComponent(code),
-      { method: 'PATCH', headers: authH(), body: JSON.stringify({ status: st, updated_at: new Date().toISOString() }) });
+    const r = await authFetch(BE.supabaseUrl + '/rest/v1/ms_reservations?code=eq.' + encodeURIComponent(code),
+      { method: 'PATCH', body: JSON.stringify({ status: st, updated_at: new Date().toISOString() }) });
     if (!r.ok) throw new Error(await r.text());
     const row = ROWS.find(x => x.code === code); if (row) row.status = st;
     renderAdmin(); refreshAvail();
+    if (st === 'confirmed' || st === 'cancelled') resendNotify(code, st);   // 확정·취소는 손님에게 안내
   } catch (e) { toast(errMsg(e)); }
 };
 window.cancelBooking = function (code) {
-  if (!confirm(T('이 예약을 취소할까요?', 'Cancel this booking?'))) return;
+  if (!confirm(T('이 예약을 취소할까요? 손님에게 취소 안내가 발송됩니다.', 'Cancel this booking? The guest will be notified.'))) return;
   setStatus(code, 'cancelled');
 };
 const fnUrl = n => BE.supabaseUrl + '/functions/v1/' + n;
@@ -631,7 +658,8 @@ window.resendNotify = async function (code, kind) {
                    : row.status === 'requested' ? 'requested' : 'confirmed');
   try {
     const r = await fetch(fnUrl('notify'), { method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {}),
+      headers: Object.assign({ 'Content-Type': 'application/json', apikey: BE.supabaseKey },
+                             { Authorization: 'Bearer ' + (TOKEN || BE.supabaseKey) }),
       body: JSON.stringify({ code, kind: k }) });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.error || 'failed');
@@ -645,7 +673,8 @@ window.resendNotify = async function (code, kind) {
 async function notifyGuest(code, kind) {
   if (!online()) return;
   try {
-    await fetch(fnUrl('notify'), { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    await fetch(fnUrl('notify'), { method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: BE.supabaseKey, Authorization: 'Bearer ' + BE.supabaseKey },
       body: JSON.stringify({ code, kind }) });
   } catch (e) { /* 발송 실패가 예약을 막지는 않는다 */ }
 }
@@ -1204,6 +1233,12 @@ setLang(lang);
 <style id="ms-reviews-style">
 .reviews-sec{padding:6px 0 70px}
 .reviews-sec.hidden{display:none}
+.reviews-sec.rv-empty{padding:0 0 56px}
+.reviews-sec.rv-empty .rv-head{display:none}
+.rv-invite{flex:1;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:6px;background:#fff;padding:18px 22px}
+.rv-invite span{font-size:13.5px;color:#44534d}
+@media (max-width:600px){.rv-invite{padding:16px 18px}.rv-invite .btn{width:100%}}
 .rv-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:22px;flex-wrap:wrap}
 .rv-head h2{margin:8px 0 0;font-weight:400;font-size:30px;letter-spacing:-.03em;color:var(--deep)}
 .rv-score{display:flex;align-items:center;gap:14px}
@@ -1327,8 +1362,14 @@ async function loadReviews() {
 function renderReviews() {
   const sec = qs('#reviews'); if (!sec) return;
   const all = RV.list;
-  sec.classList.toggle('hidden', all.length === 0);           // 후기가 없으면 섹션을 숨긴다
-  if (!all.length) return;
+  sec.classList.remove('hidden');
+  sec.classList.toggle('rv-empty', all.length === 0);
+  if (!all.length) {                                          // 후기가 아직 없으면 안내 한 줄만
+    qs('#rvScore').innerHTML = ''; qs('#rvGrid').innerHTML = ''; qs('#rvMore').innerHTML = '';
+    qs('#rvTools').innerHTML = `<div class="rv-invite"><span>${T('다녀오셨나요? 후기를 남겨주시면 다음 손님에게 큰 도움이 됩니다.', 'Been to a class? Your review helps the next guest decide.')}</span>
+      <button class="btn soft" onclick="openReview()">${T('후기 남기기', 'Write a review')}</button></div>`;
+    return;
+  }
   const avg = all.reduce((n, x) => n + (+x.rating || 0), 0) / all.length;
   const nP = all.filter(x => x.service === 'perfume').length, nE = all.filter(x => x.service === 'eeg').length;
   const list = RV.filter === 'all' ? all : all.filter(x => x.service === RV.filter);
@@ -1510,7 +1551,7 @@ window.findBooking = (function (orig) {
 async function loadReviewsAdmin() {
   try {
     if (online() && TOKEN) {
-      const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_reviews?select=*&order=created_at.desc', { headers: authH() });
+      const r = await authFetch(BE.supabaseUrl + '/rest/v1/ms_reviews?select=*&order=created_at.desc');
       RV.admin = r.ok ? await r.json() : [];
     } else RV.admin = rvGet().slice().sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
   } catch (e) { RV.admin = []; }
@@ -1542,7 +1583,7 @@ function renderReviewAdmin() {
 }
 async function rvPatch(id, patch) {
   if (online() && TOKEN) {
-    const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_reviews?id=eq.' + encodeURIComponent(id), { method: 'PATCH', headers: authH(), body: JSON.stringify(patch) });
+    const r = await authFetch(BE.supabaseUrl + '/rest/v1/ms_reviews?id=eq.' + encodeURIComponent(id), { method: 'PATCH', body: JSON.stringify(patch) });
     if (!r.ok) throw new Error(await r.text());
   } else { const a = rvGet(); const x = a.find(v => v.id === id); if (x) Object.assign(x, patch); rvSet(a); }
 }
@@ -1563,7 +1604,7 @@ window.rvDelete = async id => {
       if (x && (x.photos || []).length) {
         await fetch(BE.supabaseUrl + '/storage/v1/object/review-photos', { method: 'DELETE', headers: authH(), body: JSON.stringify({ prefixes: x.photos }) }).catch(() => {});
       }
-      const r = await fetch(BE.supabaseUrl + '/rest/v1/ms_reviews?id=eq.' + encodeURIComponent(id), { method: 'DELETE', headers: authH() });
+      const r = await authFetch(BE.supabaseUrl + '/rest/v1/ms_reviews?id=eq.' + encodeURIComponent(id), { method: 'DELETE' });
       if (!r.ok) throw new Error(await r.text());
     } else rvSet(rvGet().filter(v => v.id !== id));
     await loadReviewsAdmin(); loadReviews(); toast(T('삭제했습니다.', 'Deleted.'));
