@@ -1672,11 +1672,15 @@ window.setLang = (function (orig) {
 /* =====================================================================
    시스템 점검 — 무엇이 설치됐고 무엇이 남았는지 관리자 화면에서 확인
    ===================================================================== */
+const PAGE_VERSION = '2026-09-23 16:35';   // 이 값이 관리자 화면에 표시됩니다
 const SYS = { rows: null, busy: false };
 
 async function sysProbe() {
   const out = [];
   const add = (st, name, msg, tag) => out.push({ st, name, msg, tag: tag || '' });
+
+  /* 0. 페이지 버전 — 최신 파일이 올라갔는지 확인용 */
+  add('ok', T('페이지 버전', 'Page version'), T('이 숫자를 알려주시면 최신 파일인지 바로 확인됩니다.', 'Tell this to your developer to confirm the deployed version.'), PAGE_VERSION);
 
   /* 1. 주소와 보안 연결 */
   const proto = location.protocol, host = location.hostname;
