@@ -956,7 +956,7 @@ const BIZ = {
   addr      : '경기도 구리시 갈매순환로154 현대테라타워 A동 1038호',
   shop      : '서울특별시 종로구 인사동길 44 쌈지길 2층 SHIFTI',
   tel       : '070-4365-4807',
-  email     : 'booking@mediscent.co.kr',
+  email     : 'justina0726@gmail.com',
   privacyOfficer : '왕지현',
   host      : 'GitHub, Inc. · Supabase Inc.',
   effective : '2026년 9월 26일'
@@ -984,7 +984,6 @@ const BIZ = {
       <div><dt>전화</dt><dd>${BIZ.tel}</dd></div>
       <div><dt>이메일</dt><dd>${BIZ.email}</dd></div>
       <div><dt>개인정보 보호책임자</dt><dd>${BIZ.privacyOfficer}</dd></div>
-      <div><dt>호스팅</dt><dd>${BIZ.host}</dd></div>
     </dl>
     <div class="copy">© ${new Date().getFullYear()} ${BIZ.company}. All rights reserved.</div>`;
   foot.appendChild(box);
@@ -1693,7 +1692,7 @@ window.setLang = (function (orig) {
 /* =====================================================================
    시스템 점검 — 무엇이 설치됐고 무엇이 남았는지 관리자 화면에서 확인
    ===================================================================== */
-const PAGE_VERSION = '2026-11-10 18:00';   // 이 값이 관리자 화면에 표시됩니다
+const PAGE_VERSION = '2026-11-10 19:00';   // 이 값이 관리자 화면에 표시됩니다
 const SYS = { rows: null, busy: false };
 
 async function sysProbe() {
@@ -1803,4 +1802,181 @@ window.renderAdmin = (function (orig) {
 })(renderAdmin);
 </script>
 
+<style id="ms-motion">
+/* =====================================================================
+   모션 레이어 (2026-11-10) — 절제된 고급 모션. 구조·예약 로직은 건드리지 않는다.
+   · transform 대신 translate / scale 개별 속성을 써서 기존 스타일과 충돌하지 않게 한다
+   · 움직임 줄이기(prefers-reduced-motion) 설정에서는 스크립트가 등장 효과를 켜지 않는다
+   ===================================================================== */
+:root{--mo-out:cubic-bezier(.23,1,.32,1);--mo-io:cubic-bezier(.77,0,.175,1)}
+
+/* 1. 스크롤 등장 — html.mo 는 스크립트가 붙인다 (스크립트가 없으면 전부 그대로 보인다) */
+html.mo [data-mo]{opacity:0;translate:0 22px;transition:opacity .9s var(--mo-out),translate .9s var(--mo-out),filter .9s var(--mo-out);transition-delay:var(--mo-d,0ms)}
+html.mo [data-mo="fade"]{translate:none}
+html.mo .hero [data-mo]{filter:blur(8px)}
+html.mo [data-mo].in{opacity:1;translate:0 0;filter:none}
+
+/* 2. 히어로 이미지 — 아래에서 위로 걷히며 천천히 자리 잡는다 */
+html.mo .hero-art .frame{clip-path:inset(100% 0 0 0);transition:clip-path 1.3s var(--mo-io) .15s}
+html.mo .hero-art .frame img{scale:1.1;transition:scale 1.9s var(--mo-out) .15s}
+html.mo .hero-art.in .frame{clip-path:inset(0 0 0 0)}
+html.mo .hero-art.in .frame img{scale:1}
+
+/* 3. 상단바 — 스크롤하면 반투명 유리처럼 */
+.topbar{transition:background-color .35s ease,box-shadow .35s ease}
+.topbar.scrolled{background-color:rgba(250,249,246,.8);-webkit-backdrop-filter:saturate(1.5) blur(14px);backdrop-filter:saturate(1.5) blur(14px);box-shadow:0 1px 0 rgba(36,58,53,.08),0 14px 34px -26px rgba(17,33,31,.4)}
+
+/* 4. 누르는 요소 — 눌렀을 때 즉시 반응 */
+.btn,.pill,.slot,.plan,.paysel,.day,.step,.stepper button{transition:scale .16s var(--mo-out),translate .5s var(--mo-out),background-color .22s ease,border-color .22s ease,color .22s ease,box-shadow .3s ease,opacity .22s ease}
+.btn:active,.pill:active,.slot:active,.plan:active,.paysel:active,.stepper button:active{scale:.97}
+.day:active{scale:.93}
+.btn:disabled:active,.slot:disabled:active,.day:disabled:active,.step:disabled:active{scale:1}
+
+/* 5. 마우스가 있는 기기에서만 — 카드가 떠오르고, 빛이 커서를 따라온다 */
+.service-card{transition:translate .6s var(--mo-out),box-shadow .6s var(--mo-out)}
+.service-card .texture{transition:scale 1.6s var(--mo-out)}
+.mo-glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s ease;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.13),rgba(255,255,255,0) 62%)}
+.btn.primary{position:relative;overflow:hidden}
+.btn.primary::after{content:"";position:absolute;top:0;bottom:0;left:0;width:45%;pointer-events:none;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.18),rgba(255,255,255,0));translate:-140% 0}
+@media (hover:hover) and (pointer:fine){
+  .service-card:hover{translate:0 -6px;box-shadow:0 30px 60px -30px rgba(17,33,31,.6)}
+  .service-card:hover .texture{scale:1.06}
+  .service-card:hover .mo-glow{opacity:1}
+  .btn.primary:hover::after{translate:340% 0;transition:translate .9s var(--mo-out)}
+  .slot:not(:disabled):hover,.plan:hover,.paysel:hover{translate:0 -2px}
+  .process article{transition:translate .5s var(--mo-out)}
+  .process article:hover{translate:4px 0}
+}
+
+/* 6. 팝업 — 살짝 떠오르며 열리고, 뒤 화면이 흐려진다 */
+dialog{opacity:0;translate:0 14px;scale:.985;transition:opacity .3s var(--mo-out),translate .3s var(--mo-out),scale .3s var(--mo-out),overlay .3s allow-discrete,display .3s allow-discrete}
+dialog[open]{opacity:1;translate:0 0;scale:1}
+@starting-style{dialog[open]{opacity:0;translate:0 14px;scale:.985}}
+dialog::backdrop{background-color:rgba(17,33,31,0);transition:background-color .3s ease,-webkit-backdrop-filter .3s ease,backdrop-filter .3s ease,overlay .3s allow-discrete,display .3s allow-discrete}
+dialog[open]::backdrop{background-color:rgba(17,33,31,.44);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+@starting-style{dialog[open]::backdrop{background-color:rgba(17,33,31,0)}}
+
+/* 7. 예약 완료 — 확인 표시가 먼저, 내용이 차례로 */
+@keyframes mo-rise{from{opacity:0;translate:0 14px}to{opacity:1;translate:0 0}}
+@keyframes mo-seal{0%{opacity:0;scale:.82}60%{opacity:1;scale:1.05}100%{opacity:1;scale:1}}
+.donebox>*{animation:mo-rise .8s var(--mo-out) both}
+.donebox>*:nth-child(2){animation-delay:.14s}
+.donebox>*:nth-child(3){animation-delay:.22s}
+.donebox>*:nth-child(4){animation-delay:.32s}
+.donebox>*:nth-child(5){animation-delay:.44s}
+.donebox .seal{animation:mo-seal .9s var(--mo-out) both}
+</style>
+<script>
+/* 모션 레이어 스크립트 (2026-11-10) — 오류가 나도 예약 기능에는 영향이 없도록 전체를 감싼다 */
+(function () {
+  var root = document.documentElement;
+  try {
+    var topbar = document.querySelector('.topbar');
+    var onTop = function () { if (topbar) topbar.classList.toggle('scrolled', window.scrollY > 8); };
+    window.addEventListener('scroll', onTop, { passive: true }); onTop();
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+
+    var EASE = 'cubic-bezier(.23,1,.32,1)';
+    var fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+    /* ── 스크롤 등장 ── */
+    var mark = function (sel, o) {
+      o = o || {};
+      document.querySelectorAll(sel).forEach(function (el, i) {
+        if (el.hasAttribute('data-mo')) return;
+        el.setAttribute('data-mo', o.kind || 'up');
+        el.style.setProperty('--mo-d', ((o.base || 0) + (o.step || 0) * i) + 'ms');
+      });
+    };
+    mark('.hero .eyebrow', { base: 60 });
+    mark('.hero h1', { base: 160 });
+    mark('.hero .hero-copy', { base: 290 });
+    mark('.hero .hero-actions', { base: 410 });
+    mark('.hero-art .float-card', { base: 950 });
+    mark('.services .section-head');
+    mark('.service-grid > .service-card', { step: 130 });
+    mark('#reviews .rv-head, #reviews .rv-tools');
+    mark('.loc-card');
+    mark('.how-grid > div:first-child');
+    mark('.process > article', { base: 80, step: 90 });
+    mark('#footer .foot > div', { step: 70, kind: 'fade' });
+
+    var reveal = function (el) {
+      el.classList.add('in');
+      var d = parseFloat(el.style.getPropertyValue('--mo-d')) || 0;
+      /* 등장이 끝나면 표식을 지워, 이후 호버·누름 효과가 지연 없이 동작하게 한다 */
+      setTimeout(function () { el.removeAttribute('data-mo'); el.classList.remove('in'); el.style.removeProperty('--mo-d'); }, d + 1150);
+    };
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); reveal(e.target); } });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+
+    root.classList.add('mo');
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      document.querySelectorAll('[data-mo]').forEach(function (el) { io.observe(el); });
+      var art = document.querySelector('.hero-art'); if (art) art.classList.add('in');
+    }); });
+
+    /* ── 히어로 이미지: 스크롤에 따라 아주 조금 느리게 따라온다 (마우스 기기만) ── */
+    var art = document.querySelector('.hero-art');
+    if (art && fine) {
+      var ticking = false;
+      window.addEventListener('scroll', function () {
+        if (ticking) return; ticking = true;
+        requestAnimationFrame(function () {
+          art.style.translate = '0 ' + (Math.min(window.scrollY, 700) * -0.06).toFixed(1) + 'px';
+          ticking = false;
+        });
+      }, { passive: true });
+    }
+
+    /* ── 서비스 카드: 커서를 따라오는 은은한 빛 (마우스 기기만) ── */
+    if (fine) {
+      document.querySelectorAll('.service-card').forEach(function (card) {
+        var glow = document.createElement('div'); glow.className = 'mo-glow'; glow.setAttribute('aria-hidden', 'true');
+        var tex = card.querySelector('.texture');
+        if (tex && tex.nextSibling) card.insertBefore(glow, tex.nextSibling); else card.insertBefore(glow, card.firstChild);
+        card.addEventListener('pointermove', function (e) {
+          var r = card.getBoundingClientRect();
+          glow.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+          glow.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+      });
+    }
+
+    /* ── 화면 전환·예약 단계 전환 ── */
+    var wrap = function (name, after) {
+      var orig = window[name]; if (typeof orig !== 'function') return;
+      window[name] = function () { var r = orig.apply(this, arguments); try { after(); } catch (e) {} return r; };
+    };
+    var viewIn = function (id) {
+      var el = document.getElementById(id); if (!el || el.classList.contains('hidden')) return;
+      el.animate([{ opacity: 0, translate: '0 16px' }, { opacity: 1, translate: '0 0' }], { duration: 560, easing: EASE });
+    };
+    wrap('startBooking', function () { viewIn('bookingView'); });
+    wrap('openAdmin', function () { viewIn('adminView'); });
+    wrap('goHome', function () { viewIn('homeView'); });
+
+    var lastKey = null;
+    wrap('renderPane', function () {
+      if (typeof state === 'undefined' || state.completed) return;
+      var key = state.service + '|' + state.step;
+      if (key === lastKey) return;            /* 같은 단계 안에서의 다시 그리기(달 이동·잔여석 갱신)는 움직이지 않는다 */
+      lastKey = key;
+      var pane = document.getElementById('pane'); if (!pane) return;
+      var head = pane.querySelector('.pane-head');
+      if (head) head.animate([{ opacity: 0, translate: '0 10px' }, { opacity: 1, translate: '0 0' }], { duration: 420, easing: EASE });
+      var items = pane.querySelectorAll('.calbar, .dow, .days .day, .slots .slot, .plan-grid .plan, .form-grid .field, .consents label, .ticket, .pays .paysel, .medical-note');
+      items.forEach(function (el, i) {
+        el.animate([{ opacity: 0, translate: '0 8px' }, { opacity: 1, translate: '0 0' }],
+          { duration: 380, delay: 60 + Math.min(i * 12, 320), easing: EASE, fill: 'backwards' });
+      });
+    });
+  } catch (e) {
+    root.classList.remove('mo');   /* 문제가 생기면 등장 효과를 끄고 전부 보이게 한다 */
+  }
+})();
+</script>
 </body></html>
